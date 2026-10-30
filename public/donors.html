@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeFlow — Donor Management Registry</title>
+  <link href="/css/app.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "primary": "#094cb2",
+            "primary-container": "#3366cc",
+            "primary-fixed": "#d9e2ff",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#e7ebff",
+            "on-primary-fixed": "#001946",
+            "surface": "#faf9fa",
+            "surface-dim": "#dbdadb",
+            "surface-bright": "#faf9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3f4",
+            "surface-container": "#efedee",
+            "surface-container-high": "#e9e8e9",
+            "surface-container-highest": "#e3e2e3",
+            "on-surface": "#1b1c1d",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "secondary": "#5a5f63",
+            "secondary-container": "#dfe3e8",
+            "tertiary": "#6d5e00",
+            "tertiary-container": "#bfab49",
+            "tertiary-fixed": "#f9e37a",
+            "tertiary-fixed-dim": "#dcc661",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Left Navigation Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20">
+    <div class="px-8 mb-10 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+      </div>
+      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
+        <span class="material-symbols-outlined mr-3">dashboard</span>Dashboard
+      </a>
+      <a aria-current="page" class="flex items-center px-4 py-3 rounded-xl transition-all bg-primary-container text-on-primary-container font-bold" data-path="donors" href="/donors">
+        <span class="material-symbols-outlined mr-3">group</span>Donors
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donations" href="/donations">
+        <span class="material-symbols-outlined mr-3">volunteer_activism</span>Donations
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-inventory" href="/inventory">
+        <span class="material-symbols-outlined mr-3">bloodtype</span>Blood Inventory
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-requests" href="/requests">
+        <span class="material-symbols-outlined mr-3">medical_services</span>Blood Requests
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hospitals" href="/hospitals">
+        <span class="material-symbols-outlined mr-3">local_hospital</span>Hospitals
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="distribution" href="/requests">
+        <span class="material-symbols-outlined mr-3">local_shipping</span>Distribution
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="/reports">
+        <span class="material-symbols-outlined mr-3">bar_chart</span>Reports
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="notifications" href="#">
+        <span class="material-symbols-outlined mr-3">notifications</span>Notifications
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#">
+        <span class="material-symbols-outlined mr-3">settings</span>Settings
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all mt-4" data-path="logout" href="#">
+        <span class="material-symbols-outlined mr-3">logout</span>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Content Area -->
+  <div class="pl-64">
+    <!-- Header -->
+    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Donors</strong></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+        </div>
+        <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('System alerts normal')">
+          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View -->
+    <main class="relative pt-20 bg-surface min-h-screen p-8">
+      <div class="flex flex-col w-full pb-16">
+        <!-- Top Overview / Header Section -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs uppercase tracking-widest font-label text-primary font-bold">Registry & Records</span>
+              <span class="text-xs text-outline">•</span>
+              <span class="text-xs font-label text-outline">Active MongoDB Database</span>
+            </div>
+            <h1 class="font-headline text-4xl text-on-surface tracking-tight font-normal">Donor Management</h1>
+            <p class="text-on-surface-variant text-sm mt-1 max-w-xl">Manage registered blood donors, track donation histories, review eligibility criteria, and coordinate life-saving appointments.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-label font-medium shadow-sm hover:opacity-95 transition-all cursor-pointer" onclick="openAddDonorModal()">
+              <span class="material-symbols-outlined text-[18px]">person_add</span>
+              Add New Donor
+            </button>
+          </div>
+        </div>
+
+        <!-- Bento Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <div class="bg-surface-container-lowest p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Total Donors</span>
+              <h3 class="font-headline text-3xl text-on-surface mt-1" id="statTotalDonors">12,480</h3>
+              <span class="text-xs text-primary font-label mt-2 inline-block">+142 this week</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">group</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Eligible Donors</span>
+              <h3 class="font-headline text-3xl text-on-surface mt-1" id="statEligibleDonors">9,840</h3>
+              <span class="text-xs text-tertiary font-label mt-2 inline-block">Ready to donate</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim/20 flex items-center justify-center text-tertiary">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Deferred Donors</span>
+              <h3 class="font-headline text-3xl text-on-surface mt-1" id="statDeferredDonors">1,820</h3>
+              <span class="text-xs text-outline font-label mt-2 inline-block">Temporary recovery</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Critical Alerts</span>
+              <h3 class="font-headline text-3xl text-error mt-1" id="statCriticalDonors">820</h3>
+              <span class="text-xs text-error font-label mt-2 inline-block">Permanent / Hold</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error">
+              <span class="material-symbols-outlined material-symbols-fill">error</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-surface-container-lowest p-4 rounded-2xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+          <div class="flex items-center gap-3 w-full md:w-auto flex-1">
+            <div class="relative flex items-center w-full md:w-96">
+              <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+              <input class="w-full bg-surface-container-low pl-10 pr-4 py-2.5 rounded-xl text-sm text-on-surface focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorSearchInput" placeholder="Search by name, ID, or phone number..." type="text"/>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <div class="relative">
+              <select class="appearance-none bg-surface-container-low text-on-surface text-sm font-label py-2.5 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer" id="filterBloodGroup" onchange="loadDonors()">
+                <option value="">All Blood Groups</option>
+                <option value="A+">A Positive (A+)</option>
+                <option value="A-">A Negative (A-)</option>
+                <option value="B+">B Positive (B+)</option>
+                <option value="B-">B Negative (B-)</option>
+                <option value="O+">O Positive (O+)</option>
+                <option value="O-">O Negative (O-)</option>
+                <option value="AB+">AB Positive (AB+)</option>
+                <option value="AB-">AB Negative (AB-)</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-3 text-outline text-[18px] pointer-events-none">expand_more</span>
+            </div>
+            <div class="relative">
+              <select class="appearance-none bg-surface-container-low text-on-surface text-sm font-label py-2.5 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer" id="filterStatus" onchange="loadDonors()">
+                <option value="">All Eligibility Status</option>
+                <option value="eligible">Eligible</option>
+                <option value="deferred">Deferred</option>
+                <option value="hold">Temporary Hold</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-3 text-outline text-[18px] pointer-events-none">expand_more</span>
+            </div>
+            <button class="p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant transition-colors" onclick="resetFilters()" title="Reset Filters">
+              <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Comprehensive Donor Table -->
+        <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface-container-low text-on-surface-variant font-label text-xs uppercase tracking-wider">
+                  <th class="py-4 px-6 font-medium">Donor ID</th>
+                  <th class="py-4 px-6 font-medium">Full Name</th>
+                  <th class="py-4 px-6 font-medium">Blood Group</th>
+                  <th class="py-4 px-6 font-medium">Phone Number</th>
+                  <th class="py-4 px-6 font-medium">Last Donation</th>
+                  <th class="py-4 px-6 font-medium">Eligibility Status</th>
+                  <th class="py-4 px-6 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-surface-container-low text-sm font-body" id="donorTableBody">
+                <tr>
+                  <td class="py-6 text-center text-outline" colspan="7">Loading donors from database...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Donor Modal -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden" id="donorModal">
+    <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-label text-primary font-bold" id="modalSubTitle">New Registry Entry</span>
+          <h3 class="font-headline text-2xl text-on-surface" id="modalTitle">Add New Donor</h3>
+        </div>
+        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors" onclick="closeDonorModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="p-8 overflow-y-auto space-y-6 flex-1">
+        <form class="space-y-4" id="donorForm" onsubmit="event.preventDefault(); submitDonorForm();">
+          <input id="editDonorId" type="hidden"/>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Full Legal Name *</label>
+              <input class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorName" placeholder="Eleanor Vance" required="" type="text"/>
+            </div>
+            <div>
+              <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Contact Phone *</label>
+              <input class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorPhone" placeholder="+1 (555) 382-9102" required="" type="text"/>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Email Address</label>
+              <input class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorEmail" placeholder="eleanor.vance@lifeflow.org" type="email"/>
+            </div>
+            <div>
+              <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Blood Group *</label>
+              <select class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorBloodGroup" required="">
+                <option value="A+">A Positive (A+)</option>
+                <option value="A-">A Negative (A-)</option>
+                <option value="B+">B Positive (B+)</option>
+                <option value="B-">B Negative (B-)</option>
+                <option value="O+">O Positive (O+)</option>
+                <option value="O-">O Negative (O-)</option>
+                <option value="AB+">AB Positive (AB+)</option>
+                <option value="AB-">AB Negative (AB-)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Eligibility Status</label>
+            <select class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorEligibility">
+              <option value="Eligible">Eligible</option>
+              <option value="Deferred">Deferred</option>
+              <option value="Temporary Hold">Temporary Hold</option>
+              <option value="Permanent Hold">Permanent Hold</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Residential Address</label>
+            <input class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorAddress" placeholder="123 Health Ave, Suite 4B, Metro City" type="text"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-label font-medium text-on-surface-variant uppercase mb-2">Clinical Notes & Remarks</label>
+            <textarea class="w-full bg-surface-container-low p-4 rounded-xl text-sm border-0 focus:ring-1 focus:ring-primary focus:outline-none transition-all" id="donorNotes" placeholder="Vital medical notes, previous tolerance, or remarks..." rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="p-6 bg-surface-container-low flex items-center justify-end gap-3 border-t border-outline-variant/10">
+        <button class="px-6 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-sm font-label font-medium hover:bg-surface-container-highest transition-colors" onclick="closeDonorModal()" type="button">Cancel</button>
+        <button class="px-8 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-label font-medium shadow-sm hover:opacity-95 transition-all" onclick="submitDonorForm()" type="button">Save Donor Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive View Dossier Modal -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden" id="viewModal">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-label text-primary font-bold">Donor Dossier</span>
+          <h3 class="font-headline text-2xl text-on-surface" id="viewDonorName">Donor Profile</h3>
+        </div>
+        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors" onclick="closeViewModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-8 space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary text-xl font-headline font-bold" id="viewDonorInitials">EV</div>
+          <div>
+            <h4 class="font-headline text-xl text-on-surface" id="viewNameDisplay">Eleanor Vance</h4>
+            <p class="text-xs font-label text-primary" id="viewIdDisplay">#LF-89201</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 bg-surface-container-low p-4 rounded-xl">
+          <div>
+            <span class="text-xs font-label text-outline uppercase">Blood Group</span>
+            <p class="font-headline text-lg text-on-surface font-bold" id="viewBloodGroup">O-</p>
+          </div>
+          <div>
+            <span class="text-xs font-label text-outline uppercase">Phone Number</span>
+            <p class="font-body text-sm text-on-surface mt-1" id="viewPhone">+1 (555) 382-9102</p>
+          </div>
+          <div>
+            <span class="text-xs font-label text-outline uppercase">Eligibility Status</span>
+            <p class="font-body text-sm text-on-surface mt-1 font-semibold text-tertiary" id="viewStatus">Eligible</p>
+          </div>
+          <div>
+            <span class="text-xs font-label text-outline uppercase">Total Donations</span>
+            <p class="font-body text-sm text-on-surface mt-1" id="viewDonations">14 successful</p>
+          </div>
+        </div>
+        <div class="bg-surface-container-low p-4 rounded-xl">
+          <span class="text-xs font-label text-outline uppercase">Address</span>
+          <p class="text-sm text-on-surface mt-1" id="viewAddress">Not specified</p>
+        </div>
+        <div class="bg-surface-container-low p-4 rounded-xl">
+          <span class="text-xs font-label text-outline uppercase">Clinical Remarks</span>
+          <p class="text-sm text-on-surface-variant mt-1" id="viewNotes">None</p>
+        </div>
+      </div>
+      <div class="p-6 bg-surface-container-low flex justify-end border-t border-outline-variant/10">
+        <button class="px-6 py-2 rounded-xl bg-surface-container-high text-on-surface text-sm font-label font-medium" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let allDonors = [];
+
+    async function loadStats() {
+      try {
+        const res = await API.get('/api/donors/stats');
+        if (res.success) {
+          document.getElementById('statTotalDonors').innerText = res.stats.total.toLocaleString();
+          document.getElementById('statEligibleDonors').innerText = res.stats.eligible.toLocaleString();
+          document.getElementById('statDeferredDonors').innerText = res.stats.deferred.toLocaleString();
+          document.getElementById('statCriticalDonors').innerText = res.stats.critical.toLocaleString();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadDonors() {
+      const search = document.getElementById('donorSearchInput').value.trim();
+      const bloodGroup = document.getElementById('filterBloodGroup').value;
+      const status = document.getElementById('filterStatus').value;
+
+      let url = '/api/donors?';
+      if (search) url += `search=${encodeURIComponent(search)}&`;
+      if (bloodGroup) url += `bloodGroup=${encodeURIComponent(bloodGroup)}&`;
+      if (status) url += `status=${encodeURIComponent(status)}&`;
+
+      try {
+        const res = await API.get(url);
+        if (res.success) {
+          allDonors = res.donors;
+          renderDonorTable(res.donors);
+        }
+      } catch (err) {
+        showToast('Failed to load donors: ' + err.message, 'error');
+      }
+    }
+
+    function renderDonorTable(donors) {
+      const tbody = document.getElementById('donorTableBody');
+      tbody.innerHTML = '';
+
+      if (!donors || donors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-outline">No donors match your criteria.</td></tr>`;
+        return;
+      }
+
+      donors.forEach(donor => {
+        let badgeBg = 'bg-tertiary-fixed text-on-tertiary-fixed';
+        if (donor.eligibilityStatus === 'Deferred') badgeBg = 'bg-surface-container-high text-on-surface-variant';
+        else if (donor.eligibilityStatus.includes('Hold')) badgeBg = 'bg-error-container text-on-error-container';
+
+        const lastDon = donor.lastDonationDate
+          ? new Date(donor.lastDonationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : 'First-time';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-surface-container-low/50 transition-colors';
+        tr.innerHTML = `
+          <td class="py-4 px-6 font-label font-bold text-primary">#${donor.donorId}</td>
+          <td class="py-4 px-6 font-medium text-on-surface">${donor.fullName}</td>
+          <td class="py-4 px-6">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-error-container text-error font-headline font-bold text-xs">
+              ${donor.bloodGroup}
+            </span>
+          </td>
+          <td class="py-4 px-6 text-on-surface-variant font-mono text-xs">${donor.phone}</td>
+          <td class="py-4 px-6 text-on-surface-variant text-xs">${lastDon}</td>
+          <td class="py-4 px-6">
+            <span class="px-2.5 py-1 rounded-full text-xs font-label font-medium ${badgeBg}">${donor.eligibilityStatus}</span>
+          </td>
+          <td class="py-4 px-6 text-right">
+            <div class="flex items-center justify-end gap-1">
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="View Dossier" onclick="viewDonorDetails('${donor._id}')">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Edit Donor" onclick="openEditDonorModal('${donor._id}')">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-error-container text-error transition-colors cursor-pointer" title="Delete Donor" onclick="deleteDonor('${donor._id}', '${donor.fullName}')">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function resetFilters() {
+      document.getElementById('donorSearchInput').value = '';
+      document.getElementById('filterBloodGroup').value = '';
+      document.getElementById('filterStatus').value = '';
+      loadDonors();
+    }
+
+    function openAddDonorModal() {
+      document.getElementById('editDonorId').value = '';
+      document.getElementById('modalTitle').innerText = 'Add New Donor';
+      document.getElementById('modalSubTitle').innerText = 'New Registry Entry';
+      document.getElementById('donorForm').reset();
+      document.getElementById('donorModal').classList.remove('hidden');
+    }
+
+    function openEditDonorModal(id) {
+      const donor = allDonors.find(d => d._id === id || d.donorId === id);
+      if (!donor) return;
+
+      document.getElementById('editDonorId').value = donor._id;
+      document.getElementById('modalTitle').innerText = `Edit Donor: #${donor.donorId}`;
+      document.getElementById('modalSubTitle').innerText = 'Update Registry Dossier';
+
+      document.getElementById('donorName').value = donor.fullName || '';
+      document.getElementById('donorPhone').value = donor.phone || '';
+      document.getElementById('donorEmail').value = donor.email || '';
+      document.getElementById('donorBloodGroup').value = donor.bloodGroup || 'O+';
+      document.getElementById('donorEligibility').value = donor.eligibilityStatus || 'Eligible';
+      document.getElementById('donorAddress').value = donor.address || '';
+      document.getElementById('donorNotes').value = donor.clinicalNotes || '';
+
+      document.getElementById('donorModal').classList.remove('hidden');
+    }
+
+    function closeDonorModal() {
+      document.getElementById('donorModal').classList.add('hidden');
+    }
+
+    async function submitDonorForm() {
+      const id = document.getElementById('editDonorId').value;
+      const fullName = document.getElementById('donorName').value.trim();
+      const phone = document.getElementById('donorPhone').value.trim();
+      const email = document.getElementById('donorEmail').value.trim();
+      const bloodGroup = document.getElementById('donorBloodGroup').value;
+      const eligibilityStatus = document.getElementById('donorEligibility').value;
+      const address = document.getElementById('donorAddress').value.trim();
+      const clinicalNotes = document.getElementById('donorNotes').value.trim();
+
+      if (!fullName || !phone) {
+        showToast('Full name and contact phone are required.', 'error');
+        return;
+      }
+
+      const payload = { fullName, phone, email, bloodGroup, eligibilityStatus, address, clinicalNotes };
+
+      try {
+        if (id) {
+          await API.put(`/api/donors/${id}`, payload);
+          showToast('Donor profile updated successfully.');
+        } else {
+          await API.post('/api/donors', payload);
+          showToast('New donor registered successfully in MongoDB.');
+        }
+        closeDonorModal();
+        loadStats();
+        loadDonors();
+      } catch (err) {
+        showToast('Error saving donor: ' + err.message, 'error');
+      }
+    }
+
+    function viewDonorDetails(id) {
+      const donor = allDonors.find(d => d._id === id || d.donorId === id);
+      if (!donor) return;
+
+      document.getElementById('viewDonorName').innerText = donor.fullName;
+      document.getElementById('viewNameDisplay').innerText = donor.fullName;
+      document.getElementById('viewIdDisplay').innerText = '#' + donor.donorId;
+      document.getElementById('viewBloodGroup').innerText = donor.bloodGroup;
+      document.getElementById('viewPhone').innerText = donor.phone;
+      document.getElementById('viewStatus').innerText = donor.eligibilityStatus;
+      document.getElementById('viewDonations').innerText = `${donor.totalDonations || 0} donations`;
+      document.getElementById('viewAddress').innerText = donor.address || 'Not specified';
+      document.getElementById('viewNotes').innerText = donor.clinicalNotes || 'No adverse notes recorded.';
+
+      const parts = donor.fullName.split(' ');
+      const initials = parts.length > 1 ? parts[0][0] + parts[1][0] : donor.fullName.substring(0, 2);
+      document.getElementById('viewDonorInitials').innerText = initials.toUpperCase();
+
+      document.getElementById('viewModal').classList.remove('hidden');
+    }
+
+    function closeViewModal() {
+      document.getElementById('viewModal').classList.add('hidden');
+    }
+
+    async function deleteDonor(id, name) {
+      if (!confirm(`Are you sure you want to remove donor "${name}" from the database?`)) return;
+      try {
+        await API.delete(`/api/donors/${id}`);
+        showToast(`Donor record ${name} removed.`);
+        loadStats();
+        loadDonors();
+      } catch (err) {
+        showToast('Failed to delete donor: ' + err.message, 'error');
+      }
+    }
+
+    // Live search listener
+    document.getElementById('donorSearchInput').addEventListener('input', () => {
+      clearTimeout(window._searchTimer);
+      window._searchTimer = setTimeout(loadDonors, 300);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check query param for initial search
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('search')) {
+        document.getElementById('donorSearchInput').value = params.get('search');
+      }
+      loadStats();
+      loadDonors();
+    });
+  </script>
+</body>
+</html>

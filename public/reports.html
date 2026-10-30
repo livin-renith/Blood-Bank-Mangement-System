@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeFlow — Analytical Intelligence & Reports</title>
+  <link href="/css/app.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "primary": "#094cb2",
+            "primary-container": "#3366cc",
+            "primary-fixed": "#d9e2ff",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#e7ebff",
+            "on-primary-fixed": "#001946",
+            "surface": "#faf9fa",
+            "surface-dim": "#dbdadb",
+            "surface-bright": "#faf9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3f4",
+            "surface-container": "#efedee",
+            "surface-container-high": "#e9e8e9",
+            "surface-container-highest": "#e3e2e3",
+            "on-surface": "#1b1c1d",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "secondary": "#5a5f63",
+            "secondary-container": "#dfe3e8",
+            "tertiary": "#6d5e00",
+            "tertiary-container": "#bfab49",
+            "tertiary-fixed": "#f9e37a",
+            "on-tertiary-fixed": "#211b00",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Left Navigation Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20 no-print">
+    <div class="px-8 mb-10 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+      </div>
+      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
+        <span class="material-symbols-outlined mr-3">dashboard</span>Dashboard
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donors" href="/donors">
+        <span class="material-symbols-outlined mr-3">group</span>Donors
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donations" href="/donations">
+        <span class="material-symbols-outlined mr-3">volunteer_activism</span>Donations
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-inventory" href="/inventory">
+        <span class="material-symbols-outlined mr-3">bloodtype</span>Blood Inventory
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-requests" href="/requests">
+        <span class="material-symbols-outlined mr-3">medical_services</span>Blood Requests
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hospitals" href="/hospitals">
+        <span class="material-symbols-outlined mr-3">local_hospital</span>Hospitals
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="distribution" href="/requests">
+        <span class="material-symbols-outlined mr-3">local_shipping</span>Distribution
+      </a>
+      <a aria-current="page" class="flex items-center px-4 py-3 rounded-xl transition-all bg-primary-container text-on-primary-container font-bold" data-path="reports" href="/reports">
+        <span class="material-symbols-outlined mr-3">bar_chart</span>Reports
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="notifications" href="#">
+        <span class="material-symbols-outlined mr-3">notifications</span>Notifications
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#">
+        <span class="material-symbols-outlined mr-3">settings</span>Settings
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all mt-4" data-path="logout" href="#">
+        <span class="material-symbols-outlined mr-3">logout</span>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <div class="pl-64">
+    <!-- Header -->
+    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8 no-print">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Reports</strong></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+        </div>
+        <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('Audit records are up to date.')">
+          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View -->
+    <main class="relative pt-20 bg-surface min-h-screen p-8">
+      <div class="flex flex-col w-full pb-16">
+        <!-- Top Editorial Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <span class="text-xs font-label uppercase tracking-widest text-primary mb-2 block font-bold">Analytical Intelligence</span>
+            <h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Reports & Performance</h1>
+            <p class="text-on-surface-variant mt-2 max-w-xl text-sm leading-relaxed">Comprehensive audit trails, real-time inventory metrics, and demand forecasting powered by LifeFlow's central processing nodes.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 no-print">
+            <div class="flex items-center bg-surface-container-low rounded-xl p-1 shadow-sm">
+              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all" onclick="showToast('Period set to: Last 30 Days')">Last 30 Days</button>
+              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all" onclick="showToast('Period set to: Q3 YTD')">Q3 YTD</button>
+              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all" onclick="showToast('Select custom date range in calendar')">Custom</button>
+            </div>
+            <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-all font-label text-xs font-medium shadow-sm cursor-pointer" onclick="window.print()">
+              <span class="material-symbols-outlined text-[18px]">print</span>
+              Print Report
+            </button>
+            <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container transition-all font-label text-xs font-medium shadow-md shadow-primary/20 cursor-pointer" onclick="window.location.href='/api/reports/export-csv'">
+              <span class="material-symbols-outlined text-[18px]">download</span>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Fulfillment Rate</span>
+                <span class="p-2 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[20px]">verified</span>
+                </span>
+              </div>
+              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiFulfillment">98.4%</div>
+              <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
+                <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                <span>+1.2% from last month</span>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant font-label">
+              <span>Target: 95.0%</span>
+              <span class="text-tertiary font-bold">Optimal</span>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all"></div>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Total Collection</span>
+                <span class="p-2 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[20px]">volunteer_activism</span>
+                </span>
+              </div>
+              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiCollection">4,280 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
+              <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
+                <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                <span>+340 units vs avg</span>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant font-label">
+              <span>Active Donors: 1,420</span>
+              <span class="text-on-surface font-medium">12 Drives</span>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-full blur-2xl group-hover:bg-error/10 transition-all"></div>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Expiring (7 Days)</span>
+                <span class="p-2 rounded-lg bg-error-container text-on-error-container flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[20px]">timer</span>
+                </span>
+              </div>
+              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiExpiring">48 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
+              <div class="flex items-center gap-1.5 text-xs text-error font-medium">
+                <span class="material-symbols-outlined text-[16px]">warning</span>
+                <span>Requires immediate dispatch</span>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant font-label">
+              <span>Wastage Rate: 0.4%</span>
+              <span class="text-error font-medium">Monitored</span>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/30 rounded-full blur-2xl group-hover:bg-primary-fixed/50 transition-all"></div>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Active Requests</span>
+                <span class="p-2 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[20px]">medical_services</span>
+                </span>
+              </div>
+              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiRequests">142</div>
+              <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-medium">
+                <span class="material-symbols-outlined text-[16px]">schedule</span>
+                <span>Avg. fulfillment: 24 mins</span>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant font-label">
+              <span>Emergency: 12</span>
+              <span class="text-primary font-medium">Tracked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytical Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+          <!-- Monthly Trend Bar Chart -->
+          <div class="lg:col-span-2 bg-surface-container-low rounded-2xl p-8 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-8">
+              <div>
+                <h2 class="text-xl font-headline font-bold text-on-surface">Monthly Collection vs. Demand Trend</h2>
+                <p class="text-xs text-on-surface-variant mt-1">Comparative volume analysis across regional centers for the past two quarters</p>
+              </div>
+              <div class="flex items-center gap-4 text-xs font-label">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-primary"></span>
+                  <span class="text-on-surface-variant">Collection</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-tertiary-container"></span>
+                  <span class="text-on-surface-variant">Demand</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comparison Bar Chart -->
+            <div class="h-64 w-full flex items-end gap-3 sm:gap-6 pt-8 pb-2 px-2 relative" id="reportTrendsChart">
+              <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-30">
+                <div class="border-b border-outline-variant/30 w-full"></div>
+                <div class="border-b border-outline-variant/30 w-full"></div>
+                <div class="border-b border-outline-variant/30 w-full"></div>
+              </div>
+              <!-- Bars inserted by JS -->
+            </div>
+          </div>
+
+          <!-- Blood Type Distribution Card -->
+          <div class="bg-surface-container-low rounded-2xl p-8 shadow-sm flex flex-col justify-between">
+            <div>
+              <h2 class="text-xl font-headline font-bold text-on-surface mb-1">Blood Type Allocation</h2>
+              <p class="text-xs text-on-surface-variant mb-6">Current active stock distribution across groups</p>
+              <div class="space-y-4" id="distributionBars">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+            <div class="pt-6 border-t border-outline-variant/15 flex items-center justify-between text-xs text-on-surface-variant">
+              <span>Universal Donor (O-): Active</span>
+              <a class="text-primary font-bold hover:underline" href="/inventory">Vault View</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Summary Table -->
+        <div class="bg-surface-container-low rounded-2xl p-8 shadow-sm">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-xl font-headline font-bold text-on-surface">Regulatory Audit Discrepancies & Wastage</h2>
+              <p class="text-sm text-outline font-body mt-1">Quarterly quality control benchmarks conforming to HL7 standards</p>
+            </div>
+            <span class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">100% Audit Passed</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-surface-container-high text-xs font-label text-outline uppercase tracking-wider">
+                  <th class="py-3 px-4">Audit Metric</th>
+                  <th class="py-3 px-4">Target Standard</th>
+                  <th class="py-3 px-4">Current Value</th>
+                  <th class="py-3 px-4">Variance</th>
+                  <th class="py-3 px-4 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-surface-container-high/40">
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-on-surface">Cold-Chain Temperature Stability</td>
+                  <td class="py-3 px-4 text-secondary">2.0°C - 6.0°C (&gt;99.9%)</td>
+                  <td class="py-3 px-4 font-mono font-medium">99.98%</td>
+                  <td class="py-3 px-4 text-emerald-700">+0.08%</td>
+                  <td class="py-3 px-4 text-right"><span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">Compliant</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-on-surface">Emergency Response Dispatch</td>
+                  <td class="py-3 px-4 text-secondary">&lt; 30 minutes</td>
+                  <td class="py-3 px-4 font-mono font-medium">18.4 mins</td>
+                  <td class="py-3 px-4 text-emerald-700">-11.6 mins</td>
+                  <td class="py-3 px-4 text-right"><span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">Optimal</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-on-surface">Inventory Expiry Wastage</td>
+                  <td class="py-3 px-4 text-secondary">&lt; 1.5%</td>
+                  <td class="py-3 px-4 font-mono font-medium">0.42%</td>
+                  <td class="py-3 px-4 text-emerald-700">-1.08%</td>
+                  <td class="py-3 px-4 text-right"><span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">Exceptional</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadReports() {
+      try {
+        const res = await API.get('/api/reports/analytics');
+        if (!res.success) return;
+
+        const { kpis, trendData, distribution } = res;
+
+        document.getElementById('kpiFulfillment').innerText = kpis.fulfillmentRate;
+        document.getElementById('kpiCollection').innerHTML = `${kpis.totalCollection.toLocaleString()} <span class="text-sm font-normal text-on-surface-variant">units</span>`;
+        document.getElementById('kpiExpiring').innerHTML = `${kpis.expiringSoonUnits} <span class="text-sm font-normal text-on-surface-variant">units</span>`;
+        document.getElementById('kpiRequests').innerText = kpis.activeRequests;
+
+        renderTrends(trendData);
+        renderDistribution(distribution);
+
+      } catch (err) {
+        showToast('Error loading reports: ' + err.message, 'error');
+      }
+    }
+
+    function renderTrends(trendData) {
+      const container = document.getElementById('reportTrendsChart');
+      const grid = container.querySelector('.pointer-events-none');
+      container.innerHTML = '';
+      if (grid) container.appendChild(grid);
+
+      const maxVal = Math.max(...trendData.map(d => Math.max(d.collection, d.demand)), 280);
+
+      trendData.forEach(d => {
+        const colHeight = Math.round((d.collection / maxVal) * 100);
+        const demHeight = Math.round((d.demand / maxVal) * 100);
+
+        const col = document.createElement('div');
+        col.className = 'flex-1 flex flex-col items-center gap-2 z-10 group';
+        col.innerHTML = `
+          <div class="w-full flex items-end justify-center gap-1 h-48">
+            <div class="w-1/2 bg-primary rounded-t-lg group-hover:brightness-110 transition-all relative" style="height: ${colHeight}%;" title="Collection: ${d.collection}"></div>
+            <div class="w-1/2 bg-tertiary-container rounded-t-lg group-hover:brightness-110 transition-all" style="height: ${demHeight}%;" title="Demand: ${d.demand}"></div>
+          </div>
+          <span class="text-xs font-label text-on-surface-variant">${d.month}</span>
+        `;
+        container.appendChild(col);
+      });
+    }
+
+    function renderDistribution(distribution) {
+      const container = document.getElementById('distributionBars');
+      container.innerHTML = '';
+
+      const total = distribution.reduce((acc, d) => acc + d.units, 0) || 1;
+
+      distribution.slice(0, 5).forEach(d => {
+        const pct = Math.round((d.units / total) * 100);
+        const div = document.createElement('div');
+        div.className = 'space-y-1.5';
+        div.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-label">
+            <span class="font-bold text-on-surface">${d.bloodGroup}</span>
+            <span class="text-secondary">${d.units} units (${pct}%)</span>
+          </div>
+          <div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+            <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: ${Math.max(pct, 5)}%;"></div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadReports);
+  </script>
+</body>
+</html>

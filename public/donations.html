@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeFlow — Clinical Donation Records</title>
+  <link href="/css/app.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "primary": "#094cb2",
+            "primary-container": "#3366cc",
+            "primary-fixed": "#d9e2ff",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#e7ebff",
+            "surface": "#faf9fa",
+            "surface-dim": "#dbdadb",
+            "surface-bright": "#faf9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3f4",
+            "surface-container": "#efedee",
+            "surface-container-high": "#e9e8e9",
+            "surface-container-highest": "#e3e2e3",
+            "on-surface": "#1b1c1d",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "secondary": "#5a5f63",
+            "secondary-container": "#dfe3e8",
+            "tertiary": "#6d5e00",
+            "tertiary-container": "#bfab49",
+            "tertiary-fixed": "#f9e37a",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Left Navigation Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20">
+    <div class="px-8 mb-10 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+      </div>
+      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
+        <span class="material-symbols-outlined mr-3">dashboard</span>Dashboard
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donors" href="/donors">
+        <span class="material-symbols-outlined mr-3">group</span>Donors
+      </a>
+      <a aria-current="page" class="flex items-center px-4 py-3 rounded-xl transition-all bg-primary-container text-on-primary-container font-bold" data-path="donations" href="/donations">
+        <span class="material-symbols-outlined mr-3">volunteer_activism</span>Donations
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-inventory" href="/inventory">
+        <span class="material-symbols-outlined mr-3">bloodtype</span>Blood Inventory
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-requests" href="/requests">
+        <span class="material-symbols-outlined mr-3">medical_services</span>Blood Requests
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hospitals" href="/hospitals">
+        <span class="material-symbols-outlined mr-3">local_hospital</span>Hospitals
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="distribution" href="/requests">
+        <span class="material-symbols-outlined mr-3">local_shipping</span>Distribution
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="/reports">
+        <span class="material-symbols-outlined mr-3">bar_chart</span>Reports
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="notifications" href="#">
+        <span class="material-symbols-outlined mr-3">notifications</span>Notifications
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#">
+        <span class="material-symbols-outlined mr-3">settings</span>Settings
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all mt-4" data-path="logout" href="#">
+        <span class="material-symbols-outlined mr-3">logout</span>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <div class="pl-64">
+    <!-- Header -->
+    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Donations</strong></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+        </div>
+        <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('Phlebotomy logs synchronized.')">
+          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative pt-20 bg-surface min-h-screen p-8">
+      <div class="flex flex-col w-full pb-16">
+        <!-- Top Section -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div>
+            <span class="text-xs font-label uppercase tracking-wider text-secondary mb-1 block">Blood Bank Operations</span>
+            <h1 class="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface">Donation Records</h1>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-medium shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all cursor-pointer" onclick="openRecordModal()">
+              <span class="material-symbols-outlined text-[20px]">add_circle</span>
+              Record Donation
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="bg-surface-container-low p-4 rounded-2xl mb-8 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+          <div class="flex flex-wrap items-center gap-3 flex-1">
+            <div class="relative flex-1 min-w-[240px]">
+              <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px]">search</span>
+              <input class="w-full bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" id="donationSearch" placeholder="Search by Donor Name, ID or Center..." type="text"/>
+            </div>
+            <div class="flex items-center gap-2">
+              <select class="bg-surface-container-lowest px-4 py-2 rounded-xl text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary cursor-pointer" id="filterDonationBlood" onchange="loadDonations()">
+                <option value="All Blood Groups">All Blood Groups</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+              <select class="bg-surface-container-lowest px-4 py-2 rounded-xl text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary cursor-pointer" id="filterDonationStatus" onchange="loadDonations()">
+                <option value="All Statuses">All Statuses</option>
+                <option value="Passed">Passed</option>
+                <option value="Pending">Pending</option>
+                <option value="Failed">Failed</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-label text-secondary" id="donationRecordsCount">Showing 0 active records</span>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-secondary uppercase tracking-wider block mb-1">Total Collected Today</span>
+              <span class="text-3xl font-headline font-bold text-on-surface" id="statCollectedToday">4,500 <span class="text-sm font-normal text-secondary">mL</span></span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[24px]">water_drop</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-secondary uppercase tracking-wider block mb-1">Pending Testing</span>
+              <span class="text-3xl font-headline font-bold text-on-surface" id="statPendingTesting">18</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-tertiary-fixed/30 flex items-center justify-center text-tertiary">
+              <span class="material-symbols-outlined text-[24px]">hourglass_top</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-secondary uppercase tracking-wider block mb-1">Passed Screenings</span>
+              <span class="text-3xl font-headline font-bold text-on-surface" id="statPassedScreenings">102</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <span class="material-symbols-outlined text-[24px]">verified</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between shadow-sm">
+            <div>
+              <span class="text-xs font-label text-secondary uppercase tracking-wider block mb-1">Rejection Rate</span>
+              <span class="text-3xl font-headline font-bold text-on-surface" id="statRejectionRate">3.2%</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error">
+              <span class="material-symbols-outlined text-[24px]">cancel</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="bg-surface-container-low rounded-2xl overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface-container-high/50 text-secondary font-label text-xs uppercase tracking-wider">
+                  <th class="py-4 px-6">Donation ID</th>
+                  <th class="py-4 px-6">Donor Name / ID</th>
+                  <th class="py-4 px-6">Blood Group</th>
+                  <th class="py-4 px-6">Volume</th>
+                  <th class="py-4 px-6">Collection Center</th>
+                  <th class="py-4 px-6">Testing Status</th>
+                  <th class="py-4 px-6 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline-variant/10 text-sm" id="donationsTableBody">
+                <tr>
+                  <td class="py-8 text-center text-outline" colspan="7">Loading donation logs from MongoDB...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Record Blood Donation Modal -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden" id="recordModal">
+    <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
+        <div>
+          <span class="text-xs font-label text-primary uppercase tracking-wider block">New Clinical Entry</span>
+          <h2 class="font-headline text-2xl font-bold text-on-surface">Record Blood Donation</h2>
+        </div>
+        <button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-secondary" onclick="closeRecordModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="p-8 overflow-y-auto space-y-6 flex-1">
+        <!-- Donor Selection -->
+        <div class="space-y-2">
+          <label class="text-xs font-label uppercase tracking-wider text-secondary font-semibold">Select Verified Donor *</label>
+          <select class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary" id="donorSelect" onchange="onDonorSelectChange()" required="">
+            <option value="">Choose donor...</option>
+          </select>
+        </div>
+
+        <!-- Vital Signs Check Grid -->
+        <div>
+          <span class="text-xs font-label uppercase tracking-wider text-secondary font-semibold block mb-2">Pre-Donation Vital Signs</span>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="space-y-1">
+              <label class="text-xs text-outline font-label">Blood Pressure</label>
+              <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border border-outline-variant/30 focus:outline-none focus:border-primary text-on-surface" id="vitalBP" placeholder="120/80 mmHg" type="text" value="120/80 mmHg"/>
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-outline font-label">Hemoglobin Level</label>
+              <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border border-outline-variant/30 focus:outline-none focus:border-primary text-on-surface" id="vitalHgb" placeholder="13.5 g/dL" type="text" value="13.5 g/dL"/>
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-outline font-label">Body Temperature</label>
+              <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border border-outline-variant/30 focus:outline-none focus:border-primary text-on-surface" id="vitalTemp" placeholder="98.6 °F" type="text" value="98.6 °F"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donation Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-xs font-label uppercase tracking-wider text-secondary font-semibold">Volume Collected (mL)</label>
+            <select class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary" id="donationVolume">
+              <option value="450">450 mL (Standard Bag)</option>
+              <option value="500">500 mL (Extended Collection)</option>
+              <option value="350">350 mL (Low Weight)</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-label uppercase tracking-wider text-secondary font-semibold">Collection Site / Center</label>
+            <select class="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary" id="collectionSite">
+              <option value="Downtown Main Center">Downtown Main Center</option>
+              <option value="Northside Mobile Van">Northside Mobile Van</option>
+              <option value="City General Hospital">City General Hospital</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="space-y-2">
+          <label class="text-xs font-label uppercase tracking-wider text-secondary font-semibold">Phlebotomist Staff & Remarks</label>
+          <textarea class="w-full bg-surface-container-low p-4 rounded-xl text-sm border border-outline-variant/30 focus:outline-none focus:border-primary resize-none text-on-surface" id="donationNotes" placeholder="Enter phlebotomist signature, venipuncture arm, adverse effects..." rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="px-8 py-4 bg-surface-container-low flex items-center justify-end gap-3 border-t border-outline-variant/10">
+        <button class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface font-medium text-sm hover:bg-surface-container-highest transition-colors" onclick="closeRecordModal()" type="button">Cancel</button>
+        <button class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-medium text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all cursor-pointer" onclick="submitDonationRecord()" type="button">Save Donation Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let registeredDonors = [];
+
+    async function loadStats() {
+      try {
+        const res = await API.get('/api/donations/stats');
+        if (res.success) {
+          document.getElementById('statCollectedToday').innerHTML = `${res.stats.totalCollectedTodayMl.toLocaleString()} <span class="text-sm font-normal text-secondary">mL</span>`;
+          document.getElementById('statPendingTesting').innerText = res.stats.pendingTesting;
+          document.getElementById('statPassedScreenings').innerText = res.stats.passedScreenings;
+          document.getElementById('statRejectionRate').innerText = res.stats.rejectionRate;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadDonations() {
+      const search = document.getElementById('donationSearch').value.trim();
+      const blood = document.getElementById('filterDonationBlood').value;
+      const status = document.getElementById('filterDonationStatus').value;
+
+      let url = '/api/donations?';
+      if (search) url += `search=${encodeURIComponent(search)}&`;
+      if (blood !== 'All Blood Groups') url += `bloodGroup=${encodeURIComponent(blood)}&`;
+      if (status !== 'All Statuses') url += `status=${encodeURIComponent(status)}&`;
+
+      try {
+        const res = await API.get(url);
+        if (res.success) {
+          renderDonationsTable(res.donations);
+          document.getElementById('donationRecordsCount').innerText = `Showing ${res.count} active records`;
+        }
+      } catch (err) {
+        showToast('Error loading donations: ' + err.message, 'error');
+      }
+    }
+
+    function renderDonationsTable(donations) {
+      const tbody = document.getElementById('donationsTableBody');
+      tbody.innerHTML = '';
+
+      if (!donations || donations.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-outline">No donation records found.</td></tr>`;
+        return;
+      }
+
+      donations.forEach(don => {
+        let statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Passed</span>';
+        if (don.testingStatus === 'Pending') {
+          statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Testing</span>';
+        } else if (don.testingStatus === 'Failed') {
+          statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-error-container text-error"><span class="w-1.5 h-1.5 rounded-full bg-error"></span> Failed</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-surface-container-high/30 transition-colors';
+        tr.innerHTML = `
+          <td class="py-4 px-6 font-medium text-primary">#${don.donationId}</td>
+          <td class="py-4 px-6">
+            <div class="font-medium text-on-surface">${don.donorName}</div>
+            <div class="text-xs text-secondary">${don.donorCode ? 'ID: ' + don.donorCode : ''}</div>
+          </td>
+          <td class="py-4 px-6">
+            <span class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary-container font-bold text-xs">${don.bloodGroup}</span>
+          </td>
+          <td class="py-4 px-6 font-medium">${don.volumeMl} mL</td>
+          <td class="py-4 px-6 text-secondary">${don.collectionCenter}</td>
+          <td class="py-4 px-6">${statusBadge}</td>
+          <td class="py-4 px-6 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-secondary hover:text-on-surface transition-colors cursor-pointer" title="View Details" onclick="showToast('Donation #${don.donationId}: BP ${don.vitalSigns ? don.vitalSigns.bloodPressure : '120/80'}, Hgb ${don.vitalSigns ? don.vitalSigns.hemoglobin : '13.5 g/dL'}')">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-secondary hover:text-on-surface transition-colors cursor-pointer" title="Print Barcode Label" onclick="window.print()">
+                <span class="material-symbols-outlined text-[18px]">print</span>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function populateDonorsDropdown() {
+      try {
+        const res = await API.get('/api/donors');
+        if (res.success) {
+          registeredDonors = res.donors;
+          const select = document.getElementById('donorSelect');
+          select.innerHTML = '<option value="">Search or select verified donor...</option>';
+          registeredDonors.forEach(d => {
+            select.innerHTML += `<option value="${d._id}" data-blood="${d.bloodGroup}" data-name="${d.fullName}" data-code="${d.donorId}">${d.fullName} (${d.donorId} - ${d.bloodGroup})</option>`;
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function onDonorSelectChange() {
+      const select = document.getElementById('donorSelect');
+      const opt = select.options[select.selectedIndex];
+      if (opt && opt.dataset.blood) {
+        showToast(`Selected: ${opt.dataset.name} (${opt.dataset.blood})`);
+      }
+    }
+
+    function openRecordModal() {
+      populateDonorsDropdown();
+      document.getElementById('recordModal').classList.remove('hidden');
+    }
+
+    function closeRecordModal() {
+      document.getElementById('recordModal').classList.add('hidden');
+    }
+
+    async function submitDonationRecord() {
+      const select = document.getElementById('donorSelect');
+      const opt = select.options[select.selectedIndex];
+      if (!select.value || !opt) {
+        showToast('Please select a verified donor from the registry.', 'error');
+        return;
+      }
+
+      const donorId = select.value;
+      const donorName = opt.dataset.name;
+      const bloodGroup = opt.dataset.blood;
+      const volumeMl = Number(document.getElementById('donationVolume').value) || 450;
+      const collectionCenter = document.getElementById('collectionSite').value;
+      const bloodPressure = document.getElementById('vitalBP').value.trim();
+      const hemoglobin = document.getElementById('vitalHgb').value.trim();
+      const temperature = document.getElementById('vitalTemp').value.trim();
+      const staffNotes = document.getElementById('donationNotes').value.trim();
+
+      try {
+        await API.post('/api/donations', {
+          donorId,
+          donorName,
+          bloodGroup,
+          volumeMl,
+          collectionCenter,
+          bloodPressure,
+          hemoglobin,
+          temperature,
+          staffNotes
+        });
+
+        showToast('Donation recorded successfully! New inventory unit automatically created in testing status.');
+        closeRecordModal();
+        loadStats();
+        loadDonations();
+      } catch (err) {
+        showToast('Error recording donation: ' + err.message, 'error');
+      }
+    }
+
+    document.getElementById('donationSearch').addEventListener('input', () => {
+      clearTimeout(window._donSearchTimer);
+      window._donSearchTimer = setTimeout(loadDonations, 300);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStats();
+      loadDonations();
+      populateDonorsDropdown();
+    });
+  </script>
+</body>
+</html>

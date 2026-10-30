@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeFlow — Partner Hospitals & Institutions</title>
+  <link href="/css/app.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "primary": "#094cb2",
+            "primary-container": "#3366cc",
+            "primary-fixed": "#d9e2ff",
+            "on-primary-fixed": "#001946",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#e7ebff",
+            "surface": "#faf9fa",
+            "surface-dim": "#dbdadb",
+            "surface-bright": "#faf9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3f4",
+            "surface-container": "#efedee",
+            "surface-container-high": "#e9e8e9",
+            "surface-container-highest": "#e3e2e3",
+            "on-surface": "#1b1c1d",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "secondary": "#5a5f63",
+            "secondary-container": "#dfe3e8",
+            "secondary-fixed": "#dfe3e8",
+            "on-secondary-fixed": "#171c20",
+            "tertiary": "#6d5e00",
+            "tertiary-container": "#bfab49",
+            "tertiary-fixed": "#f9e37a",
+            "on-tertiary-fixed": "#211b00",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Left Navigation Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20">
+    <div class="px-8 mb-10 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+      </div>
+      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
+        <span class="material-symbols-outlined mr-3">dashboard</span>Dashboard
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donors" href="/donors">
+        <span class="material-symbols-outlined mr-3">group</span>Donors
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donations" href="/donations">
+        <span class="material-symbols-outlined mr-3">volunteer_activism</span>Donations
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-inventory" href="/inventory">
+        <span class="material-symbols-outlined mr-3">bloodtype</span>Blood Inventory
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-requests" href="/requests">
+        <span class="material-symbols-outlined mr-3">medical_services</span>Blood Requests
+      </a>
+      <a aria-current="page" class="flex items-center px-4 py-3 rounded-xl transition-all bg-primary-container text-on-primary-container font-bold" data-path="hospitals" href="/hospitals">
+        <span class="material-symbols-outlined mr-3">local_hospital</span>Hospitals
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="distribution" href="/requests">
+        <span class="material-symbols-outlined mr-3">local_shipping</span>Distribution
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="/reports">
+        <span class="material-symbols-outlined mr-3">bar_chart</span>Reports
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="notifications" href="#">
+        <span class="material-symbols-outlined mr-3">notifications</span>Notifications
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#">
+        <span class="material-symbols-outlined mr-3">settings</span>Settings
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all mt-4" data-path="logout" href="#">
+        <span class="material-symbols-outlined mr-3">logout</span>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <div class="pl-64">
+    <!-- Header -->
+    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Hospitals</strong></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+        </div>
+        <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('Regional hospital nodes online.')">
+          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View -->
+    <main class="relative pt-20 bg-surface min-h-screen p-8">
+      <div class="flex flex-col w-full pb-16">
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <div class="bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between shadow-sm">
+            <div class="flex items-center justify-between text-on-surface-variant mb-4">
+              <span class="text-xs uppercase font-label tracking-wider">Total Registered</span>
+              <span class="material-symbols-outlined text-primary">local_hospital</span>
+            </div>
+            <div>
+              <div class="text-3xl font-headline font-bold text-on-surface" id="statTotalHospitals">42</div>
+              <div class="text-xs text-secondary mt-1">Across 6 regional districts</div>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between shadow-sm">
+            <div class="flex items-center justify-between text-on-surface-variant mb-4">
+              <span class="text-xs uppercase font-label tracking-wider">Active Requests</span>
+              <span class="material-symbols-outlined text-tertiary material-symbols-fill">medical_services</span>
+            </div>
+            <div>
+              <div class="text-3xl font-headline font-bold text-on-surface" id="statActiveHospRequests">18</div>
+              <div class="text-xs text-tertiary mt-1 font-medium">Urgent clinical fulfillments</div>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between shadow-sm">
+            <div class="flex items-center justify-between text-on-surface-variant mb-4">
+              <span class="text-xs uppercase font-label tracking-wider">Monthly Allocations</span>
+              <span class="material-symbols-outlined text-primary">volunteer_activism</span>
+            </div>
+            <div>
+              <div class="text-3xl font-headline font-bold text-on-surface" id="statMonthlyAllocations">1,240</div>
+              <div class="text-xs text-secondary mt-1">Units successfully dispatched</div>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between shadow-sm">
+            <div class="flex items-center justify-between text-on-surface-variant mb-4">
+              <span class="text-xs uppercase font-label tracking-wider">Compliance Rate</span>
+              <span class="material-symbols-outlined text-primary">verified</span>
+            </div>
+            <div>
+              <div class="text-3xl font-headline font-bold text-on-surface" id="statComplianceRate">99.4%</div>
+              <div class="text-xs text-secondary mt-1">Zero audit discrepancies</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Layout (Table + Profile Drawer) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column: Hospital Directory Table & Controls (Span 2) -->
+          <div class="lg:col-span-2 flex flex-col gap-6">
+            <!-- Controls Header -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-surface-container-low p-4 rounded-2xl shadow-sm">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="relative flex-1">
+                  <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]">search</span>
+                  <input class="w-full bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary transition-all text-on-surface" id="hospSearchInput" placeholder="Filter by hospital name or address..." type="text"/>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <select class="bg-surface-container-lowest text-on-surface text-sm px-4 py-2 rounded-xl border-0 focus:ring-2 focus:ring-primary cursor-pointer" id="hospRegionFilter" onchange="loadHospitals()">
+                  <option value="">All Regions</option>
+                  <option value="north">North District</option>
+                  <option value="central">Central Metro</option>
+                  <option value="east">East Valley</option>
+                  <option value="south">South Bay</option>
+                </select>
+                <button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-sm hover:opacity-95 transition-all cursor-pointer whitespace-nowrap" onclick="openAddHospitalModal()">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                  <span>Add Hospital</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Directory Table Card -->
+            <div class="bg-surface-container-low rounded-2xl overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-surface-container-high text-on-surface-variant font-label text-xs uppercase tracking-wider">
+                      <th class="py-4 px-6 font-medium">Hospital Name</th>
+                      <th class="py-4 px-4 font-medium">Type</th>
+                      <th class="py-4 px-4 font-medium">Contact Person</th>
+                      <th class="py-4 px-4 font-medium">Location</th>
+                      <th class="py-4 px-4 font-medium text-center">Active Req</th>
+                      <th class="py-4 px-6 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-surface-container text-sm text-on-surface" id="hospitalTableBody">
+                    <tr>
+                      <td class="py-8 text-center text-outline" colspan="6">Loading healthcare facilities...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Profile Drawer -->
+          <div class="flex flex-col gap-6">
+            <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-6 sticky top-24" id="profile-card">
+              <div class="flex items-start justify-between border-b border-surface-container-high pb-6">
+                <div>
+                  <span class="text-xs uppercase tracking-widest font-label text-primary font-bold">Facility Profile</span>
+                  <h3 class="font-headline text-xl font-bold text-on-surface mt-1" id="profile-name">St. Jude General Medical Center</h3>
+                  <p class="text-xs text-secondary mt-0.5" id="profile-type">Level III Tertiary • ID: HSP-8801</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-xl">local_hospital</span>
+                </div>
+              </div>
+
+              <!-- Contact & Details Grid -->
+              <div class="grid grid-cols-1 gap-4 text-sm font-label">
+                <div class="bg-surface-container-low p-4 rounded-xl">
+                  <span class="text-xs uppercase text-secondary block mb-1">Primary Clinical Contact</span>
+                  <div class="font-semibold text-on-surface" id="profile-contact">Dr. Sarah Jenkins</div>
+                  <div class="text-xs text-secondary mt-0.5" id="profile-phone">+1 (555) 382-9100</div>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-xl">
+                  <span class="text-xs uppercase text-secondary block mb-1">Physical Location</span>
+                  <div class="text-on-surface text-xs leading-relaxed" id="profile-address">742 Evergreen Terrace, Central Metro</div>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span class="text-xs uppercase text-secondary block mb-0.5">Regulatory Compliance</span>
+                    <span class="text-xs text-primary font-medium">Standard Audited</span>
+                  </div>
+                  <span class="text-lg font-bold text-tertiary" id="profile-compliance">99.8%</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center gap-3 pt-2">
+                <button class="flex-1 bg-surface-container-highest text-on-surface py-2.5 rounded-xl text-sm font-medium hover:bg-surface-container-high transition-colors cursor-pointer" onclick="window.location.href='/requests'">
+                  Request History
+                </button>
+                <button class="flex-1 bg-primary text-on-primary py-2.5 rounded-xl text-sm font-medium hover:opacity-95 transition-all shadow-sm cursor-pointer" onclick="window.location.href='/requests'">
+                  Create Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Hospital Modal -->
+  <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden" id="add-hospital-modal">
+    <div class="bg-surface-container-lowest rounded-2xl p-8 w-full max-w-lg shadow-2xl relative">
+      <div class="flex items-center justify-between mb-6 border-b border-outline-variant/10 pb-4">
+        <h3 class="text-xl font-headline font-bold text-on-surface">Register New Hospital</h3>
+        <button class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant" onclick="closeAddHospitalModal()">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <form class="flex flex-col gap-4" id="hospitalForm" onsubmit="event.preventDefault(); submitHospitalForm();">
+        <div>
+          <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">Hospital Official Name *</label>
+          <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospName" placeholder="e.g. St. Jude General Medical Center" required="" type="text"/>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">Institution Type</label>
+            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospType">
+              <option value="Level III Tertiary">Level III Tertiary</option>
+              <option value="Specialized Trauma">Specialized Trauma</option>
+              <option value="Pediatric Care">Pediatric Care</option>
+              <option value="General Community">General Community</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">District / Region</label>
+            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospRegion">
+              <option value="Central Metro">Central Metro</option>
+              <option value="North District">North District</option>
+              <option value="East Valley">East Valley</option>
+              <option value="South Bay">South Bay</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">Lead Contact Person</label>
+            <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospContact" placeholder="Dr. Sarah Jenkins" type="text"/>
+          </div>
+          <div>
+            <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">Emergency Phone *</label>
+            <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospPhone" placeholder="+1 (555) 382-9100" required="" type="text"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-label uppercase text-secondary mb-1 font-semibold">Physical Address</label>
+          <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="hospAddress" placeholder="Street address, City, District" type="text"/>
+        </div>
+        <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-outline-variant/10">
+          <button class="px-5 py-2.5 rounded-xl text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors" onclick="closeAddHospitalModal()" type="button">Cancel</button>
+          <button class="px-5 py-2.5 rounded-xl text-sm font-medium bg-primary text-on-primary shadow-sm hover:opacity-95 transition-all" type="submit">Save Hospital</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let hospitalList = [];
+
+    async function loadStats() {
+      try {
+        const res = await API.get('/api/hospitals/stats');
+        if (res.success) {
+          document.getElementById('statTotalHospitals').innerText = res.stats.totalRegistered;
+          document.getElementById('statActiveHospRequests').innerText = res.stats.activeRequests;
+          document.getElementById('statMonthlyAllocations').innerText = res.stats.monthlyAllocations.toLocaleString();
+          document.getElementById('statComplianceRate').innerText = res.stats.complianceRate;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadHospitals() {
+      const search = document.getElementById('hospSearchInput').value.trim();
+      const region = document.getElementById('hospRegionFilter').value;
+
+      let url = '/api/hospitals?';
+      if (search) url += `search=${encodeURIComponent(search)}&`;
+      if (region) url += `region=${encodeURIComponent(region)}&`;
+
+      try {
+        const res = await API.get(url);
+        if (res.success) {
+          hospitalList = res.hospitals;
+          renderHospitalsTable(res.hospitals);
+          if (res.hospitals.length > 0) {
+            selectHospital(res.hospitals[0]);
+          }
+        }
+      } catch (err) {
+        showToast('Error loading hospitals: ' + err.message, 'error');
+      }
+    }
+
+    function renderHospitalsTable(hospitals) {
+      const tbody = document.getElementById('hospitalTableBody');
+      tbody.innerHTML = '';
+
+      if (!hospitals || hospitals.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-outline">No hospitals match your search.</td></tr>`;
+        return;
+      }
+
+      hospitals.forEach(hosp => {
+        let badgeType = 'bg-primary-fixed text-on-primary-fixed';
+        if (hosp.type.includes('Trauma')) badgeType = 'bg-secondary-fixed text-on-secondary-fixed';
+        else if (hosp.type.includes('Pediatric')) badgeType = 'bg-tertiary-fixed text-on-tertiary-fixed';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-surface-container-lowest transition-colors cursor-pointer group';
+        tr.onclick = () => selectHospital(hosp);
+
+        tr.innerHTML = `
+          <td class="py-4 px-6">
+            <div class="font-bold font-headline group-hover:text-primary transition-colors">${hosp.name}</div>
+            <div class="text-xs text-secondary">ID: ${hosp.hospitalId}</div>
+          </td>
+          <td class="py-4 px-4">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeType}">${hosp.type}</span>
+          </td>
+          <td class="py-4 px-4">
+            <div>${hosp.contactPerson || 'Clinical Lead'}</div>
+            <div class="text-xs text-secondary">${hosp.emergencyPhone}</div>
+          </td>
+          <td class="py-4 px-4 text-secondary text-xs">${hosp.region}</td>
+          <td class="py-4 px-4 text-center">
+            <span class="inline-block w-6 h-6 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold leading-6">${hosp.activeRequests || 0}</span>
+          </td>
+          <td class="py-4 px-6 text-right">
+            <div class="flex items-center justify-end gap-1" onclick="event.stopPropagation()">
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="View Details" onclick="selectHospitalById('${hosp._id}')">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Blood Requests" onclick="window.location.href='/requests?search=${encodeURIComponent(hosp.name)}'">
+                <span class="material-symbols-outlined text-[18px]">history</span>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function selectHospitalById(id) {
+      const hosp = hospitalList.find(h => h._id === id || h.hospitalId === id);
+      if (hosp) selectHospital(hosp);
+    }
+
+    function selectHospital(hosp) {
+      document.getElementById('profile-name').innerText = hosp.name;
+      document.getElementById('profile-type').innerText = `${hosp.type} • ID: ${hosp.hospitalId}`;
+      document.getElementById('profile-contact').innerText = hosp.contactPerson || 'Dr. Director';
+      document.getElementById('profile-phone').innerText = hosp.emergencyPhone;
+      document.getElementById('profile-address').innerText = hosp.address || `${hosp.region}, Metro District`;
+      document.getElementById('profile-compliance').innerText = hosp.complianceRate || '99.5%';
+
+      const card = document.getElementById('profile-card');
+      card.classList.add('scale-[1.01]', 'transition-transform', 'duration-200');
+      setTimeout(() => card.classList.remove('scale-[1.01]'), 200);
+    }
+
+    function openAddHospitalModal() {
+      document.getElementById('hospitalForm').reset();
+      document.getElementById('add-hospital-modal').classList.remove('hidden');
+    }
+
+    function closeAddHospitalModal() {
+      document.getElementById('add-hospital-modal').classList.add('hidden');
+    }
+
+    async function submitHospitalForm() {
+      const name = document.getElementById('hospName').value.trim();
+      const type = document.getElementById('hospType').value;
+      const region = document.getElementById('hospRegion').value;
+      const contactPerson = document.getElementById('hospContact').value.trim();
+      const emergencyPhone = document.getElementById('hospPhone').value.trim();
+      const address = document.getElementById('hospAddress').value.trim();
+
+      try {
+        await API.post('/api/hospitals', { name, type, region, contactPerson, emergencyPhone, address });
+        showToast('Hospital registered successfully in database.');
+        closeAddHospitalModal();
+        loadStats();
+        loadHospitals();
+      } catch (err) {
+        showToast('Failed to register hospital: ' + err.message, 'error');
+      }
+    }
+
+    document.getElementById('hospSearchInput').addEventListener('input', () => {
+      clearTimeout(window._hospTimer);
+      window._hospTimer = setTimeout(loadHospitals, 300);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStats();
+      loadHospitals();
+    });
+  </script>
+</body>
+</html>

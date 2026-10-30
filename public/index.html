@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeFlow — Operational Command Dashboard</title>
+  <link href="/css/app.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "primary": "#094cb2",
+            "primary-container": "#3366cc",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#e7ebff",
+            "surface": "#faf9fa",
+            "surface-dim": "#dbdadb",
+            "surface-bright": "#faf9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3f4",
+            "surface-container": "#efedee",
+            "surface-container-high": "#e9e8e9",
+            "surface-container-highest": "#e3e2e3",
+            "on-surface": "#1b1c1d",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "secondary": "#5a5f63",
+            "secondary-container": "#dfe3e8",
+            "tertiary": "#6d5e00",
+            "tertiary-container": "#bfab49",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Left Navigation Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20">
+    <div class="px-8 mb-10 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+      </div>
+      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+      <a class="flex items-center px-4 py-3 rounded-xl transition-all bg-primary-container text-on-primary-container font-bold" data-path="dashboard" href="/">
+        <span class="material-symbols-outlined mr-3">dashboard</span>Dashboard
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donors" href="/donors">
+        <span class="material-symbols-outlined mr-3">group</span>Donors
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="donations" href="/donations">
+        <span class="material-symbols-outlined mr-3">volunteer_activism</span>Donations
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-inventory" href="/inventory">
+        <span class="material-symbols-outlined mr-3">bloodtype</span>Blood Inventory
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="blood-requests" href="/requests">
+        <span class="material-symbols-outlined mr-3">medical_services</span>Blood Requests
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hospitals" href="/hospitals">
+        <span class="material-symbols-outlined mr-3">local_hospital</span>Hospitals
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="distribution" href="/requests">
+        <span class="material-symbols-outlined mr-3">local_shipping</span>Distribution
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="/reports">
+        <span class="material-symbols-outlined mr-3">bar_chart</span>Reports
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="notifications" href="#">
+        <span class="material-symbols-outlined mr-3">notifications</span>Notifications
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#">
+        <span class="material-symbols-outlined mr-3">settings</span>Settings
+      </a>
+      <a class="flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all mt-4" data-path="logout" href="#">
+        <span class="material-symbols-outlined mr-3">logout</span>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="pl-64">
+    <!-- Top Header -->
+    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Overview</strong></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+        </div>
+        <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('0 critical unhandled exceptions. All systems operational.')">
+          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative pt-20 bg-surface min-h-screen p-8">
+      <div class="flex flex-col w-full space-y-10 pb-16">
+
+        <!-- Top Quick Actions Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-surface-container-low p-8 rounded-2xl shadow-sm">
+          <div>
+            <span class="text-xs uppercase tracking-widest text-primary font-label font-bold">Operational Command</span>
+            <h1 class="text-3xl font-headline font-bold text-on-surface mt-1">Dashboard Overview</h1>
+            <p class="text-sm text-outline font-body mt-1">Connected to MongoDB Database • Central Medical Node</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:bg-surface-container-highest transition-all shadow-sm" onclick="window.location.href='/donors'">
+              <span class="material-symbols-outlined text-[18px]">person_add</span>
+              Add Donor
+            </button>
+            <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:bg-surface-container-highest transition-all shadow-sm" onclick="window.location.href='/donations'">
+              <span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+              Record Donation
+            </button>
+            <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-medium hover:opacity-95 transition-all shadow-md" onclick="window.location.href='/requests'">
+              <span class="material-symbols-outlined text-[18px]">medical_services</span>
+              Create Blood Request
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Total Donors -->
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-125 transition-transform"></div>
+            <div>
+              <span class="text-xs font-label uppercase tracking-wider text-outline">Total Donors</span>
+              <div class="text-4xl font-headline font-bold text-on-surface mt-2" id="statTotalDonors">1,428</div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm text-tertiary font-medium">
+              <span class="material-symbols-outlined text-[16px]">trending_up</span>
+              <span>+12% this month</span>
+            </div>
+          </div>
+
+          <!-- Available Units -->
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-error/5 rounded-full group-hover:scale-125 transition-transform"></div>
+            <div>
+              <span class="text-xs font-label uppercase tracking-wider text-outline">Available Units</span>
+              <div class="text-4xl font-headline font-bold text-on-surface mt-2" id="statAvailableUnits">342</div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm text-secondary font-medium">
+              <span class="material-symbols-outlined text-[16px]">bloodtype</span>
+              <span>Across all types</span>
+            </div>
+          </div>
+
+          <!-- Pending Requests -->
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-tertiary/10 rounded-full group-hover:scale-125 transition-transform"></div>
+            <div>
+              <span class="text-xs font-label uppercase tracking-wider text-outline">Pending Requests</span>
+              <div class="text-4xl font-headline font-bold text-on-surface mt-2" id="statPendingRequests">18</div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm text-error font-medium">
+              <span class="material-symbols-outlined text-[16px]">warning</span>
+              <span>Urgent attention needed</span>
+            </div>
+          </div>
+
+          <!-- Donations This Month -->
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-125 transition-transform"></div>
+            <div>
+              <span class="text-xs font-label uppercase tracking-wider text-outline">Donations This Month</span>
+              <div class="text-4xl font-headline font-bold text-on-surface mt-2" id="statDonationsMonth">215</div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm text-primary font-medium">
+              <span class="material-symbols-outlined text-[16px]">event_available</span>
+              <span>Target: 250 units</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid: Inventory & Trends -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Blood Group Inventory Summary Table -->
+          <div class="lg:col-span-7 bg-surface-container-lowest p-8 rounded-2xl shadow-sm flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-headline font-bold text-on-surface">Blood Group Inventory</h2>
+                <p class="text-sm text-outline font-body mt-1">Real-time stock levels and reserve statuses</p>
+              </div>
+              <a class="text-xs font-label uppercase tracking-wider text-primary font-bold hover:underline" href="/inventory">View Full Inventory</a>
+            </div>
+            <div class="overflow-x-auto flex-1">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-surface-container-high text-xs font-label text-outline uppercase tracking-wider">
+                    <th class="py-3 px-4">Blood Group</th>
+                    <th class="py-3 px-4">Available Units</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-container-low text-sm font-body" id="inventoryTableBody">
+                  <tr>
+                    <td class="py-4 px-4 text-secondary text-center" colspan="4">Loading real-time stock levels...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Donation Trends Chart Section -->
+          <div class="lg:col-span-5 bg-surface-container-lowest p-8 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xl font-headline font-bold text-on-surface">Donation Trends</h2>
+                <span class="text-xs font-label uppercase tracking-wider text-outline">Last 6 Months</span>
+              </div>
+              <p class="text-sm text-outline font-body mb-6">Monthly blood collection volume overview</p>
+            </div>
+
+            <!-- Dynamic Bar Chart -->
+            <div class="w-full h-64 flex items-end justify-between gap-4 pt-6 pb-2 px-2 relative bg-surface-container-low rounded-2xl" id="trendsChartContainer">
+              <!-- Background Grid Lines -->
+              <div class="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none opacity-20">
+                <div class="w-full border-b border-outline"></div>
+                <div class="w-full border-b border-outline"></div>
+                <div class="w-full border-b border-outline"></div>
+              </div>
+              <!-- Bars populated by JS -->
+            </div>
+            <div class="mt-6 flex items-center justify-between text-xs text-outline">
+              <span>Average monthly: 190 units</span>
+              <span class="text-primary font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">info</span> Verified metrics
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Blood Requests List -->
+        <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-xl font-headline font-bold text-on-surface">Recent Blood Requests</h2>
+              <p class="text-sm text-outline font-body mt-1">Active hospital requirements and emergency dispatches</p>
+            </div>
+            <a class="text-xs font-label uppercase tracking-wider text-primary font-bold hover:underline" href="/requests">View All Requests</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-surface-container-high text-xs font-label text-outline uppercase tracking-wider">
+                  <th class="py-3 px-4">Hospital Name</th>
+                  <th class="py-3 px-4">Blood Group</th>
+                  <th class="py-3 px-4">Units Required</th>
+                  <th class="py-3 px-4">Priority Level</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-surface-container-low text-sm font-body" id="recentRequestsBody">
+                <tr>
+                  <td class="py-4 px-4 text-secondary text-center" colspan="6">Loading active dispatch queue...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadDashboard() {
+      try {
+        const res = await API.get('/api/dashboard/overview');
+        if (!res.success) return;
+
+        const { stats, inventoryBreakdown, recentRequests, trends } = res;
+
+        // Metric Cards
+        document.getElementById('statTotalDonors').innerText = Number(stats.totalDonors).toLocaleString();
+        document.getElementById('statAvailableUnits').innerText = Number(stats.availableUnits).toLocaleString();
+        document.getElementById('statPendingRequests').innerText = Number(stats.pendingRequests).toLocaleString();
+        document.getElementById('statDonationsMonth').innerText = Number(stats.donationsThisMonth).toLocaleString();
+
+        // Blood Group Inventory Table
+        const invBody = document.getElementById('inventoryTableBody');
+        invBody.innerHTML = '';
+        inventoryBreakdown.forEach(item => {
+          let badgeClass = 'bg-tertiary/10 text-tertiary';
+          if (item.status === 'Critical') badgeClass = 'bg-error/10 text-error';
+          else if (item.status === 'Low') badgeClass = 'bg-error-container text-on-error-container';
+
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-surface-container-low/50 transition-colors';
+          tr.innerHTML = `
+            <td class="py-3.5 px-4 font-bold text-on-surface flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-error"></span> ${item.bloodGroup}
+            </td>
+            <td class="py-3.5 px-4 font-semibold">${item.units} units</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">${item.status}</span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button class="p-1.5 rounded-lg hover:bg-surface-container-high text-primary transition-colors" title="Manage Group Stock" onclick="window.location.href='/inventory?bloodGroup=${encodeURIComponent(item.bloodGroup)}'">
+                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+              </button>
+            </td>
+          `;
+          invBody.appendChild(tr);
+        });
+
+        // Recent Requests Table
+        const reqBody = document.getElementById('recentRequestsBody');
+        reqBody.innerHTML = '';
+        if (!recentRequests || recentRequests.length === 0) {
+          reqBody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-outline">No active blood requests currently queued.</td></tr>`;
+        } else {
+          recentRequests.forEach(req => {
+            let priorityBadge = 'bg-secondary-container text-on-secondary-container';
+            if (req.priority === 'Emergency') priorityBadge = 'bg-error text-white';
+            else if (req.priority === 'Urgent') priorityBadge = 'bg-tertiary-container text-on-tertiary-container';
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-surface-container-low/50 transition-colors';
+            tr.innerHTML = `
+              <td class="py-4 px-4 font-semibold text-on-surface">
+                <div>${req.hospitalName}</div>
+                <div class="text-xs text-outline">${req.ward || 'General'}</div>
+              </td>
+              <td class="py-4 px-4 font-bold text-error">${req.bloodGroup}</td>
+              <td class="py-4 px-4 font-semibold">${req.unitsRequired} Units</td>
+              <td class="py-4 px-4">
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium ${priorityBadge}">${req.priority}</span>
+              </td>
+              <td class="py-4 px-4">
+                <span class="text-primary font-medium">${req.status}</span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                ${req.status !== 'Fulfilled' 
+                  ? `<button class="px-3 py-1.5 rounded-xl bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary transition-all text-xs font-medium cursor-pointer" onclick="fulfillQuick('${req._id || req.requestId}')">Fulfill</button>`
+                  : `<span class="text-xs text-emerald-700 font-semibold flex items-center justify-end gap-1"><span class="material-symbols-outlined text-[16px]">check_circle</span> Dispatched</span>`
+                }
+              </td>
+            `;
+            reqBody.appendChild(tr);
+          });
+        }
+
+        // Render Bar Chart
+        renderTrendsChart(trends);
+
+      } catch (err) {
+        console.error('Error loading dashboard:', err);
+        showToast('Error loading live dashboard metrics.', 'error');
+      }
+    }
+
+    function renderTrendsChart(trends) {
+      const container = document.getElementById('trendsChartContainer');
+      const grid = container.querySelector('.pointer-events-none');
+      container.innerHTML = '';
+      if (grid) container.appendChild(grid);
+
+      const maxVal = Math.max(...trends.map(t => t.count), 280);
+
+      trends.forEach((t, idx) => {
+        const heightPct = Math.round((t.count / maxVal) * 100);
+        const isLatest = idx === trends.length - 1;
+        const barDiv = document.createElement('div');
+        barDiv.className = 'flex-1 flex flex-col items-center gap-2 z-10';
+        barDiv.innerHTML = `
+          <div class="w-full ${isLatest ? 'bg-primary hover:bg-primary-container shadow-sm' : 'bg-primary/20 hover:bg-primary'} transition-all rounded-t-lg relative group" style="height: ${heightPct}%;">
+            <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">${t.count}</span>
+          </div>
+          <span class="text-[11px] font-label ${isLatest ? 'text-on-surface font-bold' : 'text-outline'}">${t.month}</span>
+        `;
+        container.appendChild(barDiv);
+      });
+    }
+
+    async function fulfillQuick(id) {
+      try {
+        await API.patch(`/api/requests/${id}/status`, { status: 'Fulfilled' });
+        showToast('Blood request successfully fulfilled and dispatched!');
+        loadDashboard();
+      } catch (err) {
+        showToast('Failed to fulfill request: ' + err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>
