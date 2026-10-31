@@ -1,12 +1,88 @@
 /**
- * LifeFlow Main App Scripts: Navigation, Header Status, Global Controls
+ * LifeFlow Main App Scripts: Responsive Navigation, Header Status, Global Controls
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupUserHeader();
   setupGlobalSearch();
+  setupMobileSidebarControls();
 });
+
+/* =========================================================================
+   Mobile Sidebar Navigation Drawer
+   ========================================================================= */
+
+function toggleMobileSidebar(open) {
+  const sidebar = document.getElementById('appSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (!sidebar) return;
+
+  const isCurrentlyClosed = sidebar.classList.contains('-translate-x-full');
+  const shouldOpen = open !== undefined ? open : isCurrentlyClosed;
+
+  if (shouldOpen) {
+    sidebar.classList.remove('-translate-x-full');
+    sidebar.classList.add('translate-x-0');
+    if (backdrop) {
+      backdrop.classList.remove('hidden');
+      // Force reflow for CSS transition
+      void backdrop.offsetWidth;
+      backdrop.classList.remove('opacity-0');
+      backdrop.classList.add('opacity-100');
+    }
+    document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+  } else {
+    sidebar.classList.remove('translate-x-0');
+    sidebar.classList.add('-translate-x-full');
+    if (backdrop) {
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+      }, 300);
+    }
+    document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+  }
+}
+
+function setupMobileSidebarControls() {
+  // Mobile menu button in top header
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => toggleMobileSidebar(true));
+  }
+
+  // Backdrop overlay click
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', () => toggleMobileSidebar(false));
+  }
+
+  // Close sidebar on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggleMobileSidebar(false);
+    }
+  });
+
+  // Automatically reset mobile drawer when resizing back to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1024) {
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (backdrop && !backdrop.classList.contains('hidden')) {
+        backdrop.classList.add('hidden');
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+      }
+      document.body.classList.remove('overflow-hidden');
+    }
+  });
+}
+
+/* =========================================================================
+   Navigation Links & Active State
+   ========================================================================= */
 
 function setupNavigation() {
   const currentPath = window.location.pathname.toLowerCase();
@@ -14,7 +90,13 @@ function setupNavigation() {
 
   navLinks.forEach(link => {
     const linkPath = link.getAttribute('data-path').toLowerCase();
-    const href = link.getAttribute('href');
+
+    // Auto-close mobile drawer when any link is tapped on small screens
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 1024) {
+        toggleMobileSidebar(false);
+      }
+    });
 
     // Matching routes
     let isActive = false;
@@ -51,7 +133,7 @@ function setupNavigation() {
       link.href = '#';
       link.onclick = (e) => {
         e.preventDefault();
-        showToast('System configuration: MongoDB 8.3 & Node.js active.');
+        showToast('System configuration: MongoDB Atlas & Node.js active.');
       };
     } else if (linkPath === 'logout') {
       link.href = '#';
@@ -62,6 +144,10 @@ function setupNavigation() {
     }
   });
 }
+
+/* =========================================================================
+   User Header & Authentication Status
+   ========================================================================= */
 
 function setupUserHeader() {
   const user = API.getUser();
@@ -87,6 +173,10 @@ function handleLogout() {
     window.location.href = '/login';
   }, 1000);
 }
+
+/* =========================================================================
+   Global Search Bar
+   ========================================================================= */
 
 function setupGlobalSearch() {
   const searchInput = document.querySelector('header input[type="text"]');

@@ -97,10 +97,10 @@ function showToast(message, type = 'success') {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'toastNotification';
-    toast.className = 'fixed bottom-8 right-8 bg-[#303031] text-[#f2f0f1] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50';
+    toast.className = 'fixed bottom-4 sm:bottom-8 right-4 sm:right-8 left-4 sm:left-auto max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#303031] text-[#f2f0f1] px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50';
     toast.innerHTML = `
-      <span class="material-symbols-outlined text-[#f9e37a]" id="toastIcon">check_circle</span>
-      <span class="text-sm font-medium" id="toastMessage">Action completed successfully.</span>
+      <span class="material-symbols-outlined text-[#f9e37a] shrink-0" id="toastIcon">check_circle</span>
+      <span class="text-xs sm:text-sm font-medium leading-snug break-words" id="toastMessage">Action completed successfully.</span>
     `;
     document.body.appendChild(toast);
   }

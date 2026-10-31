@@ -51,13 +51,22 @@
   </script>
 </head>
 <body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar(false)"></div>
+
   <!-- Left Navigation Sidebar -->
-  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20 no-print">
-    <div class="px-8 mb-10 flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
-        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+  <aside id="appSidebar" class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none no-print">
+    <div class="px-6 sm:px-8 mb-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+          <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+        </div>
+        <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
       </div>
-      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+      <!-- Mobile Close Button -->
+      <button class="lg:hidden p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer" onclick="toggleMobileSidebar(false)" aria-label="Close Sidebar">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
     </div>
     <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
       <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
@@ -97,66 +106,72 @@
   </aside>
 
   <!-- Content -->
-  <div class="pl-64">
+  <div class="pl-0 lg:pl-64 min-w-0 w-full transition-all duration-300">
     <!-- Header -->
-    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8 no-print">
-      <div class="flex items-center gap-4">
-        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Reports</strong></span>
+    <header class="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8 no-print">
+      <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" class="lg:hidden p-2 -ml-2 rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center cursor-pointer" onclick="toggleMobileSidebar(true)" aria-label="Open Navigation Menu">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+        <span class="text-xs sm:text-sm text-on-surface-variant font-label truncate"><span class="hidden sm:inline">System Management / </span><strong class="text-on-surface">Reports</strong></span>
       </div>
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2 sm:gap-4 md:gap-6">
         <div class="relative flex items-center">
           <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
-          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+          <input class="w-28 xs:w-36 sm:w-48 md:w-64 lg:w-80 bg-surface-container-lowest pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 rounded-xl text-xs sm:text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all placeholder:text-xs sm:placeholder:text-sm" placeholder="Search..." type="text"/>
         </div>
         <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('Audit records are up to date.')">
-          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">notifications</span>
           <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
         </button>
-        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm shrink-0">
           <span class="material-symbols-outlined text-[18px]">person</span>
         </div>
       </div>
     </header>
 
     <!-- Main View -->
-    <main class="relative pt-20 bg-surface min-h-screen p-8">
+    <main class="relative pt-20 bg-surface min-h-screen p-4 sm:p-6 lg:p-8">
       <div class="flex flex-col w-full pb-16">
         <!-- Top Editorial Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
             <span class="text-xs font-label uppercase tracking-widest text-primary mb-2 block font-bold">Analytical Intelligence</span>
-            <h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Reports & Performance</h1>
-            <p class="text-on-surface-variant mt-2 max-w-xl text-sm leading-relaxed">Comprehensive audit trails, real-time inventory metrics, and demand forecasting powered by LifeFlow's central processing nodes.</p>
+            <h1 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight">Reports & Performance</h1>
+            <p class="text-on-surface-variant mt-2 max-w-xl text-xs sm:text-sm leading-relaxed">Comprehensive audit trails, real-time inventory metrics, and demand forecasting powered by LifeFlow's central processing nodes.</p>
           </div>
-          <div class="flex flex-wrap items-center gap-3 no-print">
-            <div class="flex items-center bg-surface-container-low rounded-xl p-1 shadow-sm">
-              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all" onclick="showToast('Period set to: Last 30 Days')">Last 30 Days</button>
-              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all" onclick="showToast('Period set to: Q3 YTD')">Q3 YTD</button>
-              <button class="px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all" onclick="showToast('Select custom date range in calendar')">Custom</button>
+          <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 no-print">
+            <div class="flex items-center justify-center bg-surface-container-low rounded-xl p-1 shadow-sm overflow-x-auto">
+              <button class="px-3 sm:px-4 py-2 text-xs font-label font-medium rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all whitespace-nowrap cursor-pointer" onclick="showToast('Period set to: Last 30 Days')">Last 30 Days</button>
+              <button class="px-3 sm:px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap cursor-pointer" onclick="showToast('Period set to: Q3 YTD')">Q3 YTD</button>
+              <button class="px-3 sm:px-4 py-2 text-xs font-label font-medium rounded-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap cursor-pointer" onclick="showToast('Select custom date range in calendar')">Custom</button>
             </div>
-            <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-all font-label text-xs font-medium shadow-sm cursor-pointer" onclick="window.print()">
-              <span class="material-symbols-outlined text-[18px]">print</span>
-              Print Report
-            </button>
-            <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container transition-all font-label text-xs font-medium shadow-md shadow-primary/20 cursor-pointer" onclick="window.location.href='/api/reports/export-csv'">
-              <span class="material-symbols-outlined text-[18px]">download</span>
-              Export CSV
-            </button>
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <button class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-all font-label text-xs font-medium shadow-sm cursor-pointer" onclick="window.print()">
+                <span class="material-symbols-outlined text-[18px]">print</span>
+                <span>Print Report</span>
+              </button>
+              <button class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container transition-all font-label text-xs font-medium shadow-md shadow-primary/20 cursor-pointer" onclick="window.location.href='/api/reports/export-csv'">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span>Export CSV</span>
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- KPI Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
+          <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
             <div>
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Fulfillment Rate</span>
-                <span class="p-2 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+                <span class="p-2 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[20px]">verified</span>
                 </span>
               </div>
-              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiFulfillment">98.4%</div>
+              <div class="text-2xl sm:text-3xl font-headline font-bold text-on-surface mb-1" id="kpiFulfillment">98.4%</div>
               <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
                 <span class="material-symbols-outlined text-[16px]">trending_up</span>
                 <span>+1.2% from last month</span>
@@ -168,16 +183,16 @@
             </div>
           </div>
 
-          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+          <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all"></div>
             <div>
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Total Collection</span>
-                <span class="p-2 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+                <span class="p-2 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[20px]">volunteer_activism</span>
                 </span>
               </div>
-              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiCollection">4,280 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
+              <div class="text-2xl sm:text-3xl font-headline font-bold text-on-surface mb-1" id="kpiCollection">4,280 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
               <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
                 <span class="material-symbols-outlined text-[16px]">trending_up</span>
                 <span>+340 units vs avg</span>
@@ -189,16 +204,16 @@
             </div>
           </div>
 
-          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+          <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-full blur-2xl group-hover:bg-error/10 transition-all"></div>
             <div>
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Expiring (7 Days)</span>
-                <span class="p-2 rounded-lg bg-error-container text-on-error-container flex items-center justify-center">
+                <span class="p-2 rounded-lg bg-error-container text-on-error-container flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[20px]">timer</span>
                 </span>
               </div>
-              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiExpiring">48 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
+              <div class="text-2xl sm:text-3xl font-headline font-bold text-on-surface mb-1" id="kpiExpiring">48 <span class="text-sm font-normal text-on-surface-variant">units</span></div>
               <div class="flex items-center gap-1.5 text-xs text-error font-medium">
                 <span class="material-symbols-outlined text-[16px]">warning</span>
                 <span>Requires immediate dispatch</span>
@@ -210,16 +225,16 @@
             </div>
           </div>
 
-          <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+          <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/30 rounded-full blur-2xl group-hover:bg-primary-fixed/50 transition-all"></div>
             <div>
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">Active Requests</span>
-                <span class="p-2 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                <span class="p-2 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[20px]">medical_services</span>
                 </span>
               </div>
-              <div class="text-3xl font-headline font-bold text-on-surface mb-1" id="kpiRequests">142</div>
+              <div class="text-2xl sm:text-3xl font-headline font-bold text-on-surface mb-1" id="kpiRequests">142</div>
               <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-medium">
                 <span class="material-symbols-outlined text-[16px]">schedule</span>
                 <span>Avg. fulfillment: 24 mins</span>
@@ -233,15 +248,15 @@
         </div>
 
         <!-- Analytical Charts Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 sm:mb-10">
           <!-- Monthly Trend Bar Chart -->
-          <div class="lg:col-span-2 bg-surface-container-low rounded-2xl p-8 shadow-sm flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-8">
+          <div class="lg:col-span-2 bg-surface-container-low rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 sm:mb-8">
               <div>
-                <h2 class="text-xl font-headline font-bold text-on-surface">Monthly Collection vs. Demand Trend</h2>
+                <h2 class="text-lg sm:text-xl font-headline font-bold text-on-surface">Monthly Collection vs. Demand Trend</h2>
                 <p class="text-xs text-on-surface-variant mt-1">Comparative volume analysis across regional centers for the past two quarters</p>
               </div>
-              <div class="flex items-center gap-4 text-xs font-label">
+              <div class="flex items-center gap-4 text-xs font-label self-start sm:self-auto">
                 <div class="flex items-center gap-2">
                   <span class="w-3 h-3 rounded-full bg-primary"></span>
                   <span class="text-on-surface-variant">Collection</span>
@@ -254,7 +269,7 @@
             </div>
 
             <!-- Comparison Bar Chart -->
-            <div class="h-64 w-full flex items-end gap-3 sm:gap-6 pt-8 pb-2 px-2 relative" id="reportTrendsChart">
+            <div class="h-56 sm:h-64 w-full flex items-end gap-2 sm:gap-6 pt-8 pb-2 px-2 relative overflow-x-auto" id="reportTrendsChart">
               <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-30">
                 <div class="border-b border-outline-variant/30 w-full"></div>
                 <div class="border-b border-outline-variant/30 w-full"></div>
@@ -265,9 +280,9 @@
           </div>
 
           <!-- Blood Type Distribution Card -->
-          <div class="bg-surface-container-low rounded-2xl p-8 shadow-sm flex flex-col justify-between">
+          <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm flex flex-col justify-between">
             <div>
-              <h2 class="text-xl font-headline font-bold text-on-surface mb-1">Blood Type Allocation</h2>
+              <h2 class="text-lg sm:text-xl font-headline font-bold text-on-surface mb-1">Blood Type Allocation</h2>
               <p class="text-xs text-on-surface-variant mb-6">Current active stock distribution across groups</p>
               <div class="space-y-4" id="distributionBars">
                 <!-- Populated by JS -->
@@ -281,18 +296,18 @@
         </div>
 
         <!-- Audit Summary Table -->
-        <div class="bg-surface-container-low rounded-2xl p-8 shadow-sm">
-          <div class="flex items-center justify-between mb-6">
+        <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
             <div>
-              <h2 class="text-xl font-headline font-bold text-on-surface">Regulatory Audit Discrepancies & Wastage</h2>
-              <p class="text-sm text-outline font-body mt-1">Quarterly quality control benchmarks conforming to HL7 standards</p>
+              <h2 class="text-lg sm:text-xl font-headline font-bold text-on-surface">Regulatory Audit Discrepancies & Wastage</h2>
+              <p class="text-xs sm:text-sm text-outline font-body mt-1">Quarterly quality control benchmarks conforming to HL7 standards</p>
             </div>
-            <span class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">100% Audit Passed</span>
+            <span class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold self-start sm:self-auto">100% Audit Passed</span>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-sm">
+          <div class="overflow-x-auto responsive-table-wrapper">
+            <table class="w-full text-left border-collapse text-sm min-w-[620px]">
               <thead>
-                <tr class="border-b border-surface-container-high text-xs font-label text-outline uppercase tracking-wider">
+                <tr class="border-b border-surface-container-high text-xs font-label text-outline uppercase tracking-wider whitespace-nowrap">
                   <th class="py-3 px-4">Audit Metric</th>
                   <th class="py-3 px-4">Target Standard</th>
                   <th class="py-3 px-4">Current Value</th>

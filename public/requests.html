@@ -51,13 +51,22 @@
   </script>
 </head>
 <body class="bg-surface font-body text-on-surface min-h-screen">
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar(false)"></div>
+
   <!-- Left Navigation Sidebar -->
-  <aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20">
-    <div class="px-8 mb-10 flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
-        <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+  <aside id="appSidebar" class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col pt-6 pb-8 border-r border-outline-variant/20 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
+    <div class="px-6 sm:px-8 mb-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+          <span class="material-symbols-outlined material-symbols-fill text-2xl">water_drop</span>
+        </div>
+        <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
       </div>
-      <span class="text-xl font-headline font-bold tracking-tight uppercase text-primary">LifeFlow</span>
+      <!-- Mobile Close Button -->
+      <button class="lg:hidden p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer" onclick="toggleMobileSidebar(false)" aria-label="Close Sidebar">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
     </div>
     <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
       <a class="flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="/">
@@ -97,69 +106,73 @@
   </aside>
 
   <!-- Content -->
-  <div class="pl-64">
+  <div class="pl-0 lg:pl-64 min-w-0 w-full transition-all duration-300">
     <!-- Header -->
-    <header class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
-      <div class="flex items-center gap-4">
-        <span class="text-sm text-on-surface-variant font-label">System Management / <strong class="text-on-surface">Blood Requests</strong></span>
+    <header class="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" class="lg:hidden p-2 -ml-2 rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center cursor-pointer" onclick="toggleMobileSidebar(true)" aria-label="Open Navigation Menu">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+        <span class="text-xs sm:text-sm text-on-surface-variant font-label truncate"><span class="hidden sm:inline">System Management / </span><strong class="text-on-surface">Blood Requests</strong></span>
       </div>
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2 sm:gap-4 md:gap-6">
         <div class="relative flex items-center">
           <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
-          <input class="w-80 bg-surface-container-lowest pl-10 pr-4 py-2 rounded-xl text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all" placeholder="Search records, donors, hospitals..." type="text"/>
+          <input class="w-28 xs:w-36 sm:w-48 md:w-64 lg:w-80 bg-surface-container-lowest pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 rounded-xl text-xs sm:text-sm border border-outline-variant/30 focus:border-primary focus:outline-none transition-all placeholder:text-xs sm:placeholder:text-sm" placeholder="Search..." type="text"/>
         </div>
         <button class="relative p-2 rounded-full hover:bg-surface-container-high transition-colors" onclick="showToast('Dispatch alerts updated')">
-          <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">notifications</span>
           <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
         </button>
-        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold shadow-sm shrink-0">
           <span class="material-symbols-outlined text-[18px]">person</span>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="relative pt-20 bg-surface min-h-screen p-8">
+    <main class="relative pt-20 bg-surface min-h-screen p-4 sm:p-6 lg:p-8">
       <div class="flex flex-col w-full pb-16">
         <!-- Top Editorial Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
             <div class="flex items-center gap-2 mb-2">
               <span class="text-xs font-label uppercase tracking-widest text-primary font-bold">Clinical Operations</span>
               <span class="text-xs text-outline">•</span>
               <span class="text-xs font-label text-outline">Active Dispatch Queue</span>
             </div>
-            <h1 class="font-headline text-4xl text-on-surface tracking-tight font-bold">Blood Requests & Allocation</h1>
-            <p class="text-on-surface-variant text-sm mt-1">Review urgent clinical requisitions, manage cross-matching locks, and authorize hospital dispatches.</p>
+            <h1 class="font-headline text-3xl sm:text-4xl text-on-surface tracking-tight font-bold">Blood Requests & Allocation</h1>
+            <p class="text-on-surface-variant text-xs sm:text-sm mt-1">Review urgent clinical requisitions, manage cross-matching locks, and authorize hospital dispatches.</p>
           </div>
           <div class="flex items-center gap-3">
-            <button class="flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container text-on-primary px-5 py-3 rounded-xl text-sm font-label font-medium shadow-lg hover:shadow-primary/20 transition-all cursor-pointer" onclick="openNewRequestModal()">
+            <button class="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-on-primary px-5 py-2.5 sm:py-3 rounded-xl text-sm font-label font-medium shadow-md hover:opacity-95 transition-all cursor-pointer" onclick="openNewRequestModal()">
               <span class="material-symbols-outlined text-[20px]">add_circle</span>
-              New Blood Request
+              <span>New Blood Request</span>
             </button>
           </div>
         </div>
 
         <!-- Filters & Controls Bar -->
-        <div class="bg-surface-container-low p-4 rounded-2xl mb-8 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm">
-          <div class="flex items-center gap-3 w-full lg:w-auto flex-1">
-            <div class="relative flex-1 max-w-md">
+        <div class="bg-surface-container-low p-4 rounded-2xl mb-6 sm:mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4 shadow-sm">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto flex-1">
+            <div class="relative flex-1 min-w-[200px]">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
               <input class="w-full bg-surface-container-lowest pl-10 pr-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary outline-none transition-all" id="requestSearchInput" placeholder="Filter by hospital, ID, or blood type..." type="text"/>
             </div>
-            <div class="hidden sm:flex items-center gap-2 text-xs font-label text-on-surface-variant bg-surface-container-high px-3 py-2 rounded-xl">
+            <div class="hidden sm:flex items-center gap-2 text-xs font-label text-on-surface-variant bg-surface-container-high px-3 py-2 rounded-xl shrink-0">
               <span class="material-symbols-outlined text-[16px]">filter_list</span>
               <span>Showing <strong class="text-on-surface" id="visibleCount">0</strong> requests</span>
             </div>
           </div>
-          <div class="flex items-center gap-3 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
-            <div class="flex items-center bg-surface-container-lowest p-1 rounded-xl">
-              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium bg-primary text-on-primary transition-all cursor-pointer" data-priority="all" onclick="filterPriority('all')">All Priorities</button>
-              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer" data-priority="Emergency" onclick="filterPriority('Emergency')">Emergency</button>
-              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer" data-priority="Urgent" onclick="filterPriority('Urgent')">Urgent</button>
-              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer" data-priority="Routine" onclick="filterPriority('Routine')">Routine</button>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto">
+            <div class="flex items-center bg-surface-container-lowest p-1 rounded-xl overflow-x-auto">
+              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium bg-primary text-on-primary transition-all cursor-pointer whitespace-nowrap" data-priority="all" onclick="filterPriority('all')">All</button>
+              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer whitespace-nowrap" data-priority="Emergency" onclick="filterPriority('Emergency')">Emergency</button>
+              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer whitespace-nowrap" data-priority="Urgent" onclick="filterPriority('Urgent')">Urgent</button>
+              <button class="priority-btn px-3 py-1.5 rounded-lg text-xs font-label font-medium text-on-surface-variant hover:text-on-surface transition-all cursor-pointer whitespace-nowrap" data-priority="Routine" onclick="filterPriority('Routine')">Routine</button>
             </div>
-            <select class="bg-surface-container-lowest px-4 py-2 rounded-xl text-xs font-label font-medium text-on-surface outline-none cursor-pointer" id="statusFilter" onchange="filterStatus(this.value)">
+            <select class="w-full sm:w-auto bg-surface-container-lowest px-4 py-2.5 rounded-xl text-xs font-label font-medium text-on-surface outline-none cursor-pointer" id="statusFilter" onchange="filterStatus(this.value)">
               <option value="all">All Statuses</option>
               <option value="Pending">Pending</option>
               <option value="Approved">Approved</option>
@@ -170,7 +183,7 @@
         </div>
 
         <!-- Summary Metric Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between">
             <div>
               <p class="text-xs font-label text-outline uppercase tracking-wider mb-1">Active Queue</p>
@@ -215,20 +228,20 @@
 
         <!-- Blood Requests Table Container -->
         <div class="bg-surface-container-low rounded-2xl overflow-hidden shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+          <div class="overflow-x-auto responsive-table-wrapper">
+            <table class="w-full text-left border-collapse min-w-[780px]">
               <thead>
-                <tr class="bg-surface-container-high text-on-surface-variant font-label text-xs uppercase tracking-wider">
-                  <th class="py-4 px-6 font-semibold">Request ID</th>
-                  <th class="py-4 px-6 font-semibold">Hospital Name</th>
-                  <th class="py-4 px-6 font-semibold">Blood Group</th>
-                  <th class="py-4 px-6 font-semibold">Component</th>
-                  <th class="py-4 px-6 font-semibold">Units</th>
-                  <th class="py-4 px-6 font-semibold">Priority</th>
-                  <th class="py-4 px-6 font-semibold">Request Date</th>
-                  <th class="py-4 px-6 font-semibold">Required-By</th>
-                  <th class="py-4 px-6 font-semibold">Status</th>
-                  <th class="py-4 px-6 font-semibold text-right">Actions</th>
+                <tr class="bg-surface-container-high text-on-surface-variant font-label text-xs uppercase tracking-wider whitespace-nowrap">
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Request ID</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Hospital Name</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Blood Group</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Component</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Units</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Priority</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Request Date</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Required-By</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold">Status</th>
+                  <th class="py-4 px-4 sm:px-6 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-outline-variant/10 text-sm" id="requestsTableBody">
@@ -245,41 +258,41 @@
   </div>
 
   <!-- Detail / Action Modal -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden" id="requestModal">
-    <div class="bg-surface-container-lowest w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col scale-95 transition-transform" id="modalContent">
-      <div class="p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-3 sm:p-4 overflow-y-auto" id="requestModal">
+    <div class="bg-surface-container-lowest w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] m-auto scale-95 transition-transform" id="modalContent">
+      <div class="p-4 sm:p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
         <div>
           <span class="text-xs uppercase tracking-widest font-label text-primary font-bold">Request Dossier</span>
-          <h3 class="font-headline text-2xl text-on-surface font-bold" id="modalReqId">REQ-9021</h3>
+          <h3 class="font-headline text-xl sm:text-2xl text-on-surface font-bold" id="modalReqId">REQ-9021</h3>
         </div>
-        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant" onclick="closeModal()">
+        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant cursor-pointer" onclick="closeModal()">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <div class="p-8 space-y-6">
+      <div class="p-4 sm:p-6 sm:p-8 space-y-4 sm:space-y-6 overflow-y-auto flex-1">
         <div>
-          <h4 class="font-headline text-xl text-on-surface font-semibold" id="modalHospitalName">St. Jude Metropolitan Hospital</h4>
+          <h4 class="font-headline text-lg sm:text-xl text-on-surface font-semibold" id="modalHospitalName">St. Jude Metropolitan Hospital</h4>
           <p class="text-xs text-outline mt-0.5" id="modalWard">Trauma Ward 3</p>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-xl">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 bg-surface-container-low p-3 sm:p-4 rounded-xl">
           <div>
             <span class="text-xs uppercase font-label text-outline">Blood Group</span>
-            <p class="font-headline text-xl text-error font-bold mt-1" id="modalBloodGroup">O-</p>
+            <p class="font-headline text-lg sm:text-xl text-error font-bold mt-1" id="modalBloodGroup">O-</p>
           </div>
           <div>
             <span class="text-xs uppercase font-label text-outline">Component</span>
-            <p class="text-sm font-medium text-on-surface mt-1" id="modalComponent">Packed RBCs</p>
+            <p class="text-xs sm:text-sm font-medium text-on-surface mt-1" id="modalComponent">Packed RBCs</p>
           </div>
           <div>
             <span class="text-xs uppercase font-label text-outline">Quantity</span>
-            <p class="text-sm font-bold text-on-surface mt-1" id="modalUnits">4 Units</p>
+            <p class="text-xs sm:text-sm font-bold text-on-surface mt-1" id="modalUnits">4 Units</p>
           </div>
           <div>
             <span class="text-xs uppercase font-label text-outline">Priority</span>
-            <p class="text-sm font-bold text-error mt-1" id="modalPriorityText">Emergency</p>
+            <p class="text-xs sm:text-sm font-bold text-error mt-1" id="modalPriorityText">Emergency</p>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4 text-xs font-label">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs font-label">
           <div class="bg-surface-container-low p-3 rounded-xl">
             <span class="text-outline block mb-1">Request Timestamp</span>
             <span class="font-semibold text-on-surface" id="modalReqDate">Oct 24, 14:20</span>
@@ -291,30 +304,30 @@
         </div>
         <div class="bg-surface-container-low p-4 rounded-xl">
           <span class="text-xs uppercase font-label text-outline">Clinical Indication & Notes</span>
-          <p class="text-sm text-on-surface mt-1" id="modalNotes">Severe trauma victim with acute blood loss.</p>
+          <p class="text-xs sm:text-sm text-on-surface mt-1" id="modalNotes">Severe trauma victim with acute blood loss.</p>
         </div>
       </div>
-      <div class="p-6 bg-surface-container-low flex items-center justify-between border-t border-outline-variant/10">
-        <button class="px-4 py-2 rounded-xl text-xs font-label font-medium text-error hover:bg-error-container/30 transition-colors" onclick="triggerReject()">Reject Request</button>
-        <div class="flex items-center gap-2">
-          <button class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-label font-medium hover:bg-surface-container-highest transition-colors" onclick="triggerApprove()">Approve</button>
-          <button class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-label font-bold shadow-md hover:opacity-95 transition-all" onclick="triggerAllocate()">Allocate & Fulfill</button>
+      <div class="p-4 sm:p-6 bg-surface-container-low flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 border-t border-outline-variant/10">
+        <button class="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-label font-medium text-error hover:bg-error-container/30 transition-colors cursor-pointer text-center" onclick="triggerReject()">Reject Request</button>
+        <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2">
+          <button class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-label font-medium hover:bg-surface-container-highest transition-colors cursor-pointer text-center" onclick="triggerApprove()">Approve</button>
+          <button class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-label font-bold shadow-md hover:opacity-95 transition-all cursor-pointer text-center" onclick="triggerAllocate()">Allocate & Fulfill</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Create New Blood Request Modal -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden" id="newRequestModal">
-    <div class="bg-surface-container-lowest w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col scale-95 transition-transform" id="newReqModalContent">
-      <div class="p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
-        <h3 class="font-headline text-2xl text-on-surface font-bold">Create Clinical Blood Request</h3>
-        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant" onclick="closeNewRequestModal()">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-3 sm:p-4 overflow-y-auto" id="newRequestModal">
+    <div class="bg-surface-container-lowest w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] m-auto scale-95 transition-transform" id="newReqModalContent">
+      <div class="p-4 sm:p-6 bg-surface-container-low flex items-center justify-between border-b border-outline-variant/10">
+        <h3 class="font-headline text-xl sm:text-2xl text-on-surface font-bold">Create Clinical Blood Request</h3>
+        <button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant cursor-pointer" onclick="closeNewRequestModal()">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <form class="p-8 space-y-4" id="newRequestForm" onsubmit="event.preventDefault(); submitNewRequest();">
-        <div class="grid grid-cols-2 gap-4">
+      <form class="p-4 sm:p-6 sm:p-8 space-y-4 overflow-y-auto flex-1" id="newRequestForm" onsubmit="event.preventDefault(); submitNewRequest();">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-label uppercase text-on-surface-variant font-semibold mb-1">Destination Hospital *</label>
             <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqHospital" placeholder="St. Jude Metropolitan Hospital" required="" type="text"/>
@@ -324,10 +337,10 @@
             <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqWard" placeholder="Trauma ICU / Ward 4" type="text"/>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label class="block text-xs font-label uppercase text-on-surface-variant font-semibold mb-1">Blood Group *</label>
-            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqBloodGroup" required="">
+            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface cursor-pointer" id="reqBloodGroup" required="">
               <option value="O-">O Negative (O-)</option>
               <option value="O+">O Positive (O+)</option>
               <option value="A+">A Positive (A+)</option>
@@ -340,7 +353,7 @@
           </div>
           <div>
             <label class="block text-xs font-label uppercase text-on-surface-variant font-semibold mb-1">Component</label>
-            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqComponent">
+            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface cursor-pointer" id="reqComponent">
               <option value="Packed RBCs">Packed RBCs</option>
               <option value="Platelets">Platelets</option>
               <option value="Plasma, Fresh Frozen">Fresh Frozen Plasma</option>
@@ -352,10 +365,10 @@
             <input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqUnits" min="1" required="" type="number" value="2"/>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-label uppercase text-on-surface-variant font-semibold mb-1">Priority Level *</label>
-            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqPriority">
+            <select class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface cursor-pointer" id="reqPriority">
               <option value="Emergency">Emergency (Immediate)</option>
               <option value="Urgent">Urgent (&lt; 4 Hours)</option>
               <option value="Routine">Routine (Scheduled)</option>
@@ -370,9 +383,9 @@
           <label class="block text-xs font-label uppercase text-on-surface-variant font-semibold mb-1">Clinical Notes / Diagnosis</label>
           <textarea class="w-full bg-surface-container-low p-4 rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary text-on-surface" id="reqNotes" placeholder="Reason for request, patient ID or surgical schedule..." rows="2"></textarea>
         </div>
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/10">
-          <button class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium" onclick="closeNewRequestModal()" type="button">Cancel</button>
-          <button class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-medium shadow-md hover:opacity-95" type="submit">Submit Request</button>
+        <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-outline-variant/10">
+          <button class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium cursor-pointer text-center" onclick="closeNewRequestModal()" type="button">Cancel</button>
+          <button class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-medium shadow-md hover:opacity-95 cursor-pointer text-center" type="submit">Submit Request</button>
         </div>
       </form>
     </div>
