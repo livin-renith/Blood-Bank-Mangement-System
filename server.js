@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 
 const app = express();
@@ -14,6 +15,18 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure DB is connected for serverless invocations
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.error('DB connection error in middleware:', err.message);
+    }
+  }
+  next();
+});
 
 // Serve static assets from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -83,13 +96,15 @@ app.get('*', (req, res) => {
   }
 });
 
-// Start Express Server
-const server = app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`  LifeFlow Blood Bank Management System`);
-  console.log(`  Server running on http://localhost:${PORT}`);
-  console.log(`  Database: MongoDB (lifeflow_bloodbank)`);
-  console.log(`====================================================`);
-});
+// Start Express Server (only when run locally, Vercel exports the app)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`  LifeFlow Blood Bank Management System`);
+    console.log(`  Server running on http://localhost:${PORT}`);
+    console.log(`  Database: MongoDB (lifeflow_bloodbank)`);
+    console.log(`====================================================`);
+  });
+}
 
 module.exports = app;

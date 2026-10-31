@@ -1,0 +1,65 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/donors",
+      "destination": "/donors.html"
+    },
+    {
+      "source": "/donor-management",
+      "destination": "/donors.html"
+    },
+    {
+      "source": "/inventory",
+      "destination": "/inventory.html"
+    },
+    {
+      "source": "/blood-inventory",
+      "destination": "/inventory.html"
+    },
+    {
+      "source": "/requests",
+      "destination": "/requests.html"
+    },
+    {
+      "source": "/blood-requests",
+      "destination": "/requests.html"
+    },
+    {
+      "source": "/donations",
+      "destination": "/donations.html"
+    },
+    {
+      "source": "/hospitals",
+      "destination": "/hospitals.html"
+    },
+    {
+      "source": "/reports",
+      "destination": "/reports.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/register.html"
+    },
+    {
+      "source": "/password-reset",
+      "destination": "/password-reset.html"
+    },
+    {
+      "source": "/forgot-password",
+      "destination": "/password-reset.html"
+    }
+  ]
+}
